@@ -47,12 +47,9 @@ gamenote_id FK >-< GameNotes.id
 Messages
 -
 id PK serial
+to_user FK >-< User.id
+from_user FK >-< User.id
 date date
 subject text
 body text
 
-UserMessages
--
-msg_id FK >-< Messages.id
-from_user FK >-< User.id
-to_user FK >-< User.id

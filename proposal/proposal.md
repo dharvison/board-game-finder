@@ -38,7 +38,7 @@ The Board Game Atlas API may be missing some games, though it is quite complete.
 
 ### c. Is there any sensitive information you need to secure?
 
-User location data may need to be secured.
+User passwords will need to be secured.
 
 ### d. What functionality will your app include?
 
@@ -61,8 +61,11 @@ Users will:
 
 Allowing users to connect with players in their area is what makes this more than CRUD.
 
-Stretch goals include things like:
-- Scheduling a time to play a game
-- Forming groups for ongoing play
-- Linking the user to Amazon to purchase games
-- Integrating with BoardGameGeek for reviews and more game information.
+Stretch goals include:
+
+1. Improved location search. Allow creating a range for search, e.g. Players within 10 miles
+2. Allow users to search for games to play online via Board Game Arena, Table Top Simulator or similar
+3. Scheduling a time to play a game
+4. Forming groups for ongoing play, with group chat capabilities
+5. Linking the user to Amazon to purchase games
+6. Integrating with BoardGameGeek for reviews and more game information.
