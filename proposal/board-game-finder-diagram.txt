@@ -1,0 +1,58 @@
+# quickdatabasediagrams.com
+
+User
+-
+id PK serial
+email text
+username text
+password hash
+bio text
+location_country text
+location_city text
+is_admin boolean
+
+Gameslist
+-
+id PK serial
+user_id FK >- User.id
+title text
+blurb text
+
+GameslistGames
+-
+gameslist_id FK >-< Gameslist.id
+games_id FK >-< Games.id
+
+Games
+-
+id PK
+title text
+designer text
+cover_url url
+year date
+
+GameNotes
+-
+id PK serial
+game_id FK -< Games.id
+own boolean
+want_to_play boolean
+note text
+
+UserGameNotes
+-
+user_id FK >-< User.id
+gamenote_id FK >-< GameNotes.id
+
+Messages
+-
+id PK serial
+date date
+subject text
+body text
+
+UserMessages
+-
+msg_id FK -< Messages.id
+from_user FK -< User.id
+to_user FK -< User.id
