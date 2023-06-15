@@ -53,6 +53,6 @@ body text
 
 UserMessages
 -
-msg_id FK -< Messages.id
-from_user FK -< User.id
-to_user FK -< User.id
+msg_id FK >-< Messages.id
+from_user FK >-< User.id
+to_user FK >-< User.id
