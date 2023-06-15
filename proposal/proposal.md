@@ -1,5 +1,8 @@
 # Board Game Library and Player Finder
 
+Board Game Finder allows uses to manager their board game library, mark games they wish to play, and find others in their area to play those games with.
+
+
 ## 1. What tech stack will you use for your final project?
 
 React and Redux for the front-end. Node, Express and Postgres for the back-end.
