@@ -8,10 +8,12 @@ const cors = require("cors");
 const { NotFoundError } = require("./expressError");
 
 const { authenticateJWT } = require("./middleware/auth");
-// const authRoutes = require("./routes/auth");
-// const companiesRoutes = require("./routes/companies");
-// const usersRoutes = require("./routes/users");
-// const jobsRoutes = require("./routes/jobs");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
+const gameRoutes = require("./routes/games");
+const listRoutes = require("./routes/gamelists");
+const noteRoutes = require("./routes/gamenotes");
+const messageRoutes = require("./routes/messages");
 
 const morgan = require("morgan");
 
@@ -22,11 +24,12 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
-// app.use("/auth", authRoutes);
-// app.use("/companies", companiesRoutes);
-// app.use("/users", usersRoutes);
-// app.use("/jobs", jobsRoutes);
-
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/game", gameRoutes);
+app.use("/list", listRoutes);
+app.use("/note", noteRoutes);
+app.use("/msg", messageRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {

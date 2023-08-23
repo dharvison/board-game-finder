@@ -6,8 +6,10 @@ const { NotFoundError } = require("../expressError");
 
 /** Related functions for games. */
 
+/** TODO need to connect with API helper to fetch things, etc */
+
 class Game {
-    
+
     /** Create game with data.
      *
      * Returns { id, title, designer, coverUrl, year }
@@ -15,14 +17,14 @@ class Game {
      * Throws BadRequestError on duplicates.
      **/
 
-    static async create({ title, designer, coverUrl, year}) {
+    static async create({ title, designer, coverUrl, year }) {
         // const duplicateCheck = await db.query(
         //     `SELECT username
         //    FROM users
         //    WHERE username = $1`,
         //     [username],
         // );
-        
+
         // if (duplicateCheck.rows[0]) {
         //     throw new BadRequestError(`Duplicate username: ${username}`);
         // }
@@ -53,7 +55,7 @@ class Game {
      * Returns [{ id, title, designer, coverUrl, year }, ...]
      **/
 
-    static async findAll() {
+    static async findAll(/* TODO FILTERING! */) {
         const result = await db.query(
             `SELECT id,
                   title,
@@ -75,20 +77,20 @@ class Game {
      **/
     // TODO implement!
     static async get(gameId) {
-        // const userRes = await db.query(
-        //     `SELECT username,
-        //           first_name AS "firstName",
-        //           last_name AS "lastName",
-        //           email,
-        //           is_admin AS "isAdmin"
-        //    FROM users
-        //    WHERE username = $1`,
-        //     [username],
-        // );
+        const gameRes = await db.query(
+            `SELECT id,
+                title,
+                designer,
+                cover_url AS "coverUrl",
+                year
+            FROM games
+            WHERE id = $1`,
+            [gameId],
+        );
 
-        // const user = userRes.rows[0];
+        const game = gameRes.rows[0];
 
-        // if (!user) throw new NotFoundError(`No user: ${username}`);
+        if (!game) throw new NotFoundError(`No game: ${gameId}`);
 
         // const userApplicationsRes = await db.query(
         //     `SELECT a.job_id
@@ -96,7 +98,7 @@ class Game {
         //    WHERE a.username = $1`, [username]);
 
         // user.applications = userApplicationsRes.rows.map(a => a.job_id);
-        // return user;
+        return game;
     }
 
     /** Update game data with `data`.

@@ -46,7 +46,7 @@ class Gamenote {
             ],
         );
 
-        const note = result.rows[0];
+        const noteRes = result.rows[0];
 
         return note;
     }
@@ -81,6 +81,16 @@ class Gamenote {
      **/
 
     static async get(noteId) {
+        const existRes = await db.query(
+            `SELECT id
+            FROM gamenotes
+            WHERE id = $1`,
+            [noteId],
+        );
+        const exists = existRes.rows[0];
+        if (!exists) throw new NotFoundError(`No note: ${noteId}`);
+
+        // TODO this is probably wrong
         const noteRes = await db.query(
             `SELECT n.id,
                 n.user_id AS "userId",
