@@ -11,10 +11,13 @@ const express = require("express");
 const router = new express.Router();
 const { BadRequestError } = require("../expressError");
 
-router.get("/:term", async function (req, res, next) {
+router.get("/:query", async function (req, res, next) {
     try {
-        const results = await performSearch(req.params.term);
-        console.log(results);
+        // TODO make smarter
+        // do something smart with the query to search locally and BGG?
+        // grab thumbnails in aggregate call with all bggIds returned?
+
+        const results = await performSearch(req.params.query);
         return res.json(results);
     } catch (err) {
         return next(err);

@@ -7,13 +7,11 @@ const { NotFoundError } = require("../expressError");
 
 /** Related functions for games. */
 
-/** TODO need to connect with API helper to fetch things, etc */
-
 class Game {
 
     /** Create game with data.
      *
-     * Returns { id, bggId, title, designer, coverUrl, year }
+     * Returns { bggId, title, designer, coverUrl, year }
      *
      * Throws BadRequestError on duplicates.
      **/
@@ -37,8 +35,8 @@ class Game {
             designer,
             cover_url,
             year)
-           VALUES ($1, $2, $3, $4)
-           RETURNING id, bgg_id AS "bggId", title, designer, cover_url AS "coverUrl", year`,
+           VALUES ($1, $2, $3, $4, $5)
+           RETURNING bgg_id AS "bggId", title, designer, cover_url AS "coverUrl", year`,
             [
                 bggId,
                 title,
@@ -47,28 +45,26 @@ class Game {
                 year
             ],
         );
-
         const game = result.rows[0];
 
         return game;
     }
 
-    /** Find all games.
+    /** Find games stored in DB TODO not sure this is required
      *
-     * Returns [{ id, bggId, title, designer, coverUrl, year }, ...]
+     * Returns [{ bggId, title, designer, coverUrl, year }, ...]
      **/
 
-    static async findAll(/* TODO FILTERING! */) {
+    static async findLocalGames(/* FILTERING? */) {
         const result = await db.query(
-            `SELECT id,
-                  bgg_id AS "bggId",
+            `SELECT bgg_id AS "bggId",
                   title,
                   designer,
                   cover_url AS "coverUrl",
                   year
            FROM games
            ORDER BY title`,
-        ); // order by external DB id?
+        );
 
         return result.rows;
     }
@@ -77,15 +73,14 @@ class Game {
      * 
      * If not present locally, fetch from BGG API
      *
-     * Returns { id, bggId, title, designer, coverUrl, year }
+     * Returns { bggId, title, designer, coverUrl, year }
      *
      * Throws NotFoundError if game not found.
      **/
 
     static async get(bggId) {
         const gameRes = await db.query(
-            `SELECT id,
-                bgg_id AS "bggId",
+            `SELECT bgg_id AS "bggId",
                 title,
                 designer,
                 cover_url AS "coverUrl",
@@ -97,8 +92,12 @@ class Game {
         let game = gameRes.rows[0];
 
         if (!game) {
-            game = this.fetch([bggId]);
-            // this.create(game);
+            const fetchedGame = await this.fetch([bggId]);
+            if (fetchedGame.length > 0) {
+                game = fetchedGame[0];
+                // maybe only add on creation of Note or List?
+                this.create(game);
+            }
         }
 
         return game;
@@ -127,12 +126,12 @@ class Game {
      * Data can include:
      *   { title, designer, coverUrl, year }
      *
-     * Returns { id, bggId, title, designer, coverUrl, year }
+     * Returns { bggId, title, designer, coverUrl, year }
      *
      * Throws NotFoundError if not found.
      */
 
-    static async update(gameId, data) {
+    static async update(bggId, data) {
         const { setCols, values } = sqlForPartialUpdate(
             data,
             {
@@ -142,34 +141,33 @@ class Game {
 
         const querySql = `UPDATE games 
                       SET ${setCols} 
-                      WHERE id = ${idVarIdx} 
-                      RETURNING id,
-                                bgg_id AS "bggId",
+                      WHERE bgg_id = ${idVarIdx} 
+                      RETURNING bgg_id AS "bggId",
                                 title,
                                 designer,
                                 cover_url AS "coverUrl",
                                 year`;
-        const result = await db.query(querySql, [...values, gameId]);
+        const result = await db.query(querySql, [...values, bggId]);
         const game = result.rows[0];
 
-        if (!game) throw new NotFoundError(`No game: ${gameId}`);
+        if (!game) throw new NotFoundError(`No game: ${bggId}`);
 
         return game;
     }
 
     /** Delete given game from database; returns undefined. */
 
-    static async remove(gameId) {
+    static async remove(bggId) {
         let result = await db.query(
             `DELETE
            FROM games
-           WHERE id = $1
-           RETURNING id`,
-            [gameId],
+           WHERE bgg_id = $1
+           RETURNING bgg_id`,
+            [bggId],
         );
         const game = result.rows[0];
 
-        if (!game) throw new NotFoundError(`No game: ${gameId}`);
+        if (!game) throw new NotFoundError(`No game: ${bggId}`);
     }
 }
 

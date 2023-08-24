@@ -14,13 +14,11 @@ const { BadRequestError } = require("../expressError");
 router.get("/hot", async function (req, res, next) {
     try {
         const results = await hotItems();
-        console.log(results);
         return res.json(results);
     } catch (err) {
         return next(err);
     }
 });
-
 
 
 module.exports = router;

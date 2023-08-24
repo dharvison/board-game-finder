@@ -24,14 +24,12 @@ CREATE TABLE messages (
 
 -- Game Lists
 
--- TODO make bgg_id the key?
 CREATE TABLE games (
-  id SERIAL PRIMARY KEY,
-  bgg_id INTEGER UNIQUE,
+  bgg_id INTEGER PRIMARY KEY,
   title TEXT NOT NULL,
   designer TEXT,
   cover_url TEXT,
-  year DATE
+  year INTEGER
 );
 
 CREATE TABLE gamelists (
@@ -46,7 +44,7 @@ CREATE TABLE gamelist_games (
     gamelist_id INTEGER NOT NULL
       REFERENCES gamelists(id),
     game_id INTEGER NOT NULL
-      REFERENCES games(id)
+      REFERENCES games(bgg_id)
 );
 
 -- Game Notes
@@ -56,7 +54,7 @@ CREATE TABLE gamenotes (
   user_id INTEGER NOT NULL
     REFERENCES users(id),
   game_id INTEGER NOT NULL
-    REFERENCES games(id) ON DELETE CASCADE,
+    REFERENCES games(bgg_id) ON DELETE CASCADE,
   note TEXT NOT NULL,
   own BOOLEAN,
   want_to_play BOOLEAN
