@@ -8,12 +8,18 @@ const cors = require("cors");
 const { NotFoundError } = require("./expressError");
 
 const { authenticateJWT } = require("./middleware/auth");
-const authRoutes = require("./routes/auth");
+
+// Model Routes
 const userRoutes = require("./routes/users");
 const gameRoutes = require("./routes/games");
 const listRoutes = require("./routes/gamelists");
 const noteRoutes = require("./routes/gamenotes");
 const messageRoutes = require("./routes/messages");
+
+// Action Routes
+const authRoutes = require("./routes/auth");
+const searchRoutes =  require("./routes/search");
+const trendingRoutes = require("./routes/trending");
 
 const morgan = require("morgan");
 
@@ -30,6 +36,8 @@ app.use("/game", gameRoutes);
 app.use("/list", listRoutes);
 app.use("/note", noteRoutes);
 app.use("/msg", messageRoutes);
+app.use("/search", searchRoutes);
+app.use("/trending", trendingRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {

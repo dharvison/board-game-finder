@@ -1,6 +1,7 @@
 "use strict";
 
 const db = require("../db");
+const { fetchGameInfo } = require("../apis/bggXML");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 const { NotFoundError } = require("../expressError");
 
@@ -12,32 +13,34 @@ class Game {
 
     /** Create game with data.
      *
-     * Returns { id, title, designer, coverUrl, year }
+     * Returns { id, bggId, title, designer, coverUrl, year }
      *
      * Throws BadRequestError on duplicates.
      **/
 
-    static async create({ title, designer, coverUrl, year }) {
-        // const duplicateCheck = await db.query(
-        //     `SELECT username
-        //    FROM users
-        //    WHERE username = $1`,
-        //     [username],
-        // );
+    static async create({ bggId, title, designer, coverUrl, year }) {
+        const duplicateCheck = await db.query(
+            `SELECT bgg_id
+           FROM games
+           WHERE bgg_id = $1`,
+            [bggId],
+        );
 
-        // if (duplicateCheck.rows[0]) {
-        //     throw new BadRequestError(`Duplicate username: ${username}`);
-        // }
+        if (duplicateCheck.rows[0]) {
+            throw new BadRequestError(`Duplicate game: ${bggId} ${title}`);
+        }
 
         const result = await db.query(
             `INSERT INTO games
-           (title,
+           (bgg_id,
+            title,
             designer,
             cover_url,
             year)
            VALUES ($1, $2, $3, $4)
-           RETURNING id, title, designer, cover_url AS "coverUrl", year`,
+           RETURNING id, bgg_id AS "bggId", title, designer, cover_url AS "coverUrl", year`,
             [
+                bggId,
                 title,
                 designer,
                 coverUrl,
@@ -52,12 +55,13 @@ class Game {
 
     /** Find all games.
      *
-     * Returns [{ id, title, designer, coverUrl, year }, ...]
+     * Returns [{ id, bggId, title, designer, coverUrl, year }, ...]
      **/
 
     static async findAll(/* TODO FILTERING! */) {
         const result = await db.query(
             `SELECT id,
+                  bgg_id AS "bggId",
                   title,
                   designer,
                   cover_url AS "coverUrl",
@@ -69,36 +73,50 @@ class Game {
         return result.rows;
     }
 
-    /** Given a id, return data about game. TODO this likely fetches more info from API
+    /** Given a bggId, return data about game.
+     * 
+     * If not present locally, fetch from BGG API
      *
-     * Returns { id, title, designer, coverUrl, year }
+     * Returns { id, bggId, title, designer, coverUrl, year }
      *
      * Throws NotFoundError if game not found.
      **/
-    // TODO implement!
-    static async get(gameId) {
+
+    static async get(bggId) {
         const gameRes = await db.query(
             `SELECT id,
+                bgg_id AS "bggId",
                 title,
                 designer,
                 cover_url AS "coverUrl",
                 year
             FROM games
-            WHERE id = $1`,
-            [gameId],
+            WHERE bgg_id = $1`,
+            [bggId],
         );
+        let game = gameRes.rows[0];
 
-        const game = gameRes.rows[0];
+        if (!game) {
+            game = this.fetch([bggId]);
+            // this.create(game);
+        }
 
-        if (!game) throw new NotFoundError(`No game: ${gameId}`);
-
-        // const userApplicationsRes = await db.query(
-        //     `SELECT a.job_id
-        //    FROM applications AS a
-        //    WHERE a.username = $1`, [username]);
-
-        // user.applications = userApplicationsRes.rows.map(a => a.job_id);
         return game;
+    }
+
+    /** Fetch games from BGG
+     *  
+     * bggIds is a list of ids
+     * 
+     * Returns [{ bggId, title, designer, coverUrl, year } ...]
+     */
+    static async fetch(bggIds) {
+        const fetchedData = await fetchGameInfo(bggIds);
+        
+        // TODO Store the data when ???
+        // TODO include more data on direct fetch? or create another helper
+
+        return fetchedData;
     }
 
     /** Update game data with `data`.
@@ -109,7 +127,7 @@ class Game {
      * Data can include:
      *   { title, designer, coverUrl, year }
      *
-     * Returns { id, title, designer, coverUrl, year }
+     * Returns { id, bggId, title, designer, coverUrl, year }
      *
      * Throws NotFoundError if not found.
      */
@@ -126,6 +144,7 @@ class Game {
                       SET ${setCols} 
                       WHERE id = ${idVarIdx} 
                       RETURNING id,
+                                bgg_id AS "bggId",
                                 title,
                                 designer,
                                 cover_url AS "coverUrl",

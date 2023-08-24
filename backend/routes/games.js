@@ -13,9 +13,9 @@ const { BadRequestError } = require("../expressError");
 
 /** POST / { game } => { game } 
  * 
- * game should be { title, designer, coverUrl, year} TODO and external ID!
+ * game should be { bggId, title, designer, coverUrl, year} TODO and external ID!
  * 
- * returns { id, title, designer, coverUrl, year }
+ * returns { id, bggId, title, designer, coverUrl, year }
  * 
  * Authorization required: user
  */
@@ -31,7 +31,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
     }
 });
 
-/** GET / => { games: [ { title, designer, coverUrl, year} TODO and external ID! ...] } 
+/** GET / => { games: [ { id, bggId, title, designer, coverUrl, year } ...] } 
  * 
  * filtering to come!
  * 
@@ -51,7 +51,7 @@ router.get("/", async function (req, res, next) {
 
 /** GET /[gameId] => { game }  
  * 
- * returns { id, title, designer, coverUrl, year }
+ * returns { id, bggId, title, designer, coverUrl, year }
  * 
  * Authorization required: none
  */
@@ -67,9 +67,13 @@ router.get("/:id", async function (req, res, next) {
 
 /** PATCH /[gameId] { game } => { game } 
  * 
- * game should be { title, designer, coverUrl, year} TODO and external ID!
- * 
- * returns { id, title, designer, coverUrl, year }
+ * This is a "partial update" --- it's fine if data doesn't contain
+ * all the fields; this only changes provided ones.
+ *
+ * Data can include:
+ *   { title, designer, coverUrl, year }
+ *  
+ * returns { id, bggId, title, designer, coverUrl, year }
  * 
  * Authorization required: user maybe Admin?
  */

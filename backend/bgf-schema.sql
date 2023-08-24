@@ -24,8 +24,10 @@ CREATE TABLE messages (
 
 -- Game Lists
 
+-- TODO make bgg_id the key?
 CREATE TABLE games (
   id SERIAL PRIMARY KEY,
+  bgg_id INTEGER UNIQUE,
   title TEXT NOT NULL,
   designer TEXT,
   cover_url TEXT,

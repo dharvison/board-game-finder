@@ -7,7 +7,7 @@ const { NotFoundError } = require("../expressError");
 /** Related functions for gamelists. */
 
 class Gamelist {
-    
+
     /** Create gamelist with data.
      *
      * Returns { id, userId, title, blurb }
@@ -15,7 +15,7 @@ class Gamelist {
      * Throws BadRequestError on duplicates.
      **/
 
-    static async create({ userId, title, blurb}) {
+    static async create({ userId, title, blurb }) {
         const result = await db.query(
             `INSERT INTO gamelists
            (user_id,
@@ -48,7 +48,7 @@ class Gamelist {
            FROM gamelists
            WHERE user_id = $1
            ORDER BY title`,
-           [userId],
+            [userId],
         );
 
         return result.rows;
