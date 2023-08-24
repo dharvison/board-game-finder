@@ -25,7 +25,7 @@ The users will be people who are interested in hobby board games and are looking
 
 ## 6. What data do you plan on using? How are you planning on collecting your data?
 
-I will be using the [Board Game Atlas API](https://api.boardgameatlas.com/api/docs) to collect board games data. Users will search for games to add to their libraries and mark games they are interested in playing with others.
+I will be using the [Board Game Geek API](https://boardgamegeek.com/wiki/page/BGG_XML_API2) to collect board games data. Users will search for games to add to their libraries and mark games they are interested in playing with others.
 
 ## 7. In brief, outline your approach to creating your project (knowing that you may not know everything in advance and that these details might change later). Answer questions like the ones below, but feel free to add more information:
 
@@ -37,7 +37,7 @@ I will be using the [Board Game Atlas API](https://api.boardgameatlas.com/api/do
 
 ### b. What kinds of issues might you run into with your API? This is especially important if you are creating your own API, web scraping produces notoriously messy data.
 
-The Board Game Atlas API may be missing some games, though it is quite complete. It allows for multiple types of searching, which may complicate the search UI.
+The Board Game Geek API may be missing some games, though it is quite complete. It allows for multiple types of searching, which may complicate the search UI.
 
 ### c. Is there any sensitive information you need to secure?
 
