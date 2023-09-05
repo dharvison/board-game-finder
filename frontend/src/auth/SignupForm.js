@@ -7,24 +7,26 @@ import Alerts from "../common/Alerts";
  * Sign up form
  */
 function SignupForm({ signup }) {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
 
     const initFormData = {
         username: '',
         password: '',
-        firstName: '',
-        lastName: '',
         email: '',
+        name: '',
+        bio: '',
+        country: '',
+        city: '',
     };
     const [formData, setFormData] = useState(initFormData);
     const [formErrors, setFormErrors] = useState([]);
 
-    /** Try to create the user. Success? -> /companies */
+    /** Try to create the user. Success? -> / */
     const handleSubmit = async (evt) => {
         evt.preventDefault();
         const res = await signup(formData);
         if (res.success) {
-            navigation.push('/companies');
+            navigate('/');
         } else {
             setFormErrors(res.errors);
         }
@@ -54,16 +56,25 @@ function SignupForm({ signup }) {
                             <Input name="password" type="password" value={formData.password} onChange={handleChange} required />
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="firstName">First Name</Label>
-                            <Input name="firstName" type="text" value={formData.firstName} onChange={handleChange} required />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="lastName">Last Name</Label>
-                            <Input name="lastName" type="text" value={formData.lastName} onChange={handleChange} required />
-                        </FormGroup>
-                        <FormGroup>
                             <Label htmlFor="email">Email</Label>
                             <Input name="email" type="text" value={formData.email} onChange={handleChange} required />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="name">Name</Label>
+                            <Input name="name" type="text" value={formData.name} onChange={handleChange} required />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="bio">Bio</Label> 
+                            {/* TODO text area? */}
+                            <Input name="bio" type="text" value={formData.bio} onChange={handleChange} required />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="country">Country</Label>
+                            <Input name="country" type="text" value={formData.country} onChange={handleChange} required />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="city">City</Label>
+                            <Input name="city" type="text" value={formData.city} onChange={handleChange} required />
                         </FormGroup>
 
                         {formErrors.length > 0 ?

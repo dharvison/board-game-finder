@@ -1,42 +1,52 @@
 import React, { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import BoardGameFinderHome from "../home/BoardGameFinderHome";
+import BoardGameFinderHome from "../common/BoardGameFinderHome";
 import SignupForm from "../auth/SignupForm";
 import LoginForm from "../auth/LoginForm";
+import GameDetail from "../games/GameDetail";
+import ListDetail from "../lists/ListDetail";
+import ListForm from "../lists/ListForm";
+import NoteForm from "../notes/NoteForm";
+import NoteDetail from "../notes/NoteDetail";
 import ProfileForm from "../users/ProfileForm";
-// import Jobs from "../jobs/Jobs";
-// import Companies from "../companies/Companies";
-// import CompanyDetail from "../companies/CompanyDetail";
-import UserContext from "../auth/UserContext";
+// import ProfileView from "../users/ProfileView"
+// import UserContext from "../auth/UserContext";
+// import SearchResults from "../search/SearchResults";
 
 /**
  * Routes for App
  */
 function RouteList({ signup, login }) {
-    const { currentUser } = useContext(UserContext);
+    // const { currentUser, searchTerm } = useContext(UserContext);
 
     const routeComp = [];
-    if (currentUser.loaded) {
+    // if (currentUser.loaded) {
         // Logged in user can access protected routes
-        // routeComp.push(<Route path="/companies/:handle" element={<CompanyDetail />} />);
-        // routeComp.push(<Route path="/companies" element={<Companies />} />);
-        // routeComp.push(<Route path="/jobs" element={<Jobs />} />);
-        routeComp.push(<Route path="/profile" element={<ProfileForm />} />);
-    } else {
+        routeComp.push(<Route path="/games/:bggId" element={<GameDetail />} />);
+
+        routeComp.push(<Route path="/user/notes/create" element={<NoteForm />} />);
+        routeComp.push(<Route path="/user/notes/:noteId" element={<NoteDetail/>} />);
+        routeComp.push(<Route path="/user/lists/create" element={<ListForm />} />);
+        routeComp.push(<Route path="/user/lists/:listId" element={<ListDetail/>} />);
+        // routeComp.push(<Route key="profile" path="/profile" element={<ProfileView />} />);
+        routeComp.push(<Route key="profile-update" path="/user/profile" element={<ProfileForm />} />);
+        // routeComp.push(<Route key="search" path="/search" element={SearchResults({ searchTerm })} />);
+    // } else {
         // Anon users can only access signup and login
-        routeComp.push(<Route path="/signup" element={SignupForm({ signup })} />);
-        routeComp.push(<Route path="/login" element={LoginForm({ login })} />);
-    }
+        // routeComp.push(<Route path="/search" element={SearchResults({ searchTerm })} />);
+        routeComp.push(<Route key="signup" path="/signup" element={SignupForm({ signup })} />);
+        routeComp.push(<Route key="login" path="/login" element={LoginForm({ login })} />);
+    // }
 
     return (
         <div>
             <Routes>
-                <Route path="/" element={BoardGameFinderHome()} />
+                <Route key="home" path="/" element={BoardGameFinderHome()} />
 
                 {routeComp}
 
-                <Route path="*" element={<Navigate to="/" />} />
+                <Route key="catchall" path="*" element={<Navigate to="/" />} />
             </Routes>
         </div>
     )

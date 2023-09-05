@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { decodeJwt } from 'jose';
 import './App.css';
@@ -19,7 +19,7 @@ export const TOKEN_ID = "bgf-token";
 function App() {
   const [token, setToken] = useLocalStorage(TOKEN_ID);
   const [currentUser, setCurrentUser] = useState({ data: null, loaded: false });
-  const [jobsApplied, setJobsApplied] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -30,9 +30,8 @@ function App() {
           // API needs the token for calls
           BoardGameFinderApi.token = token;
           const user = await BoardGameFinderApi.getCurrentUser(username);
+          BoardGameFinderApi.userId = user.id;
           setCurrentUser({ data: user, loaded: true });
-          console.log(user.applications);
-          setJobsApplied(user.applications);
         } catch (err) {
           console.error("Failed to load user", err);
           setCurrentUser({ data: null, loaded: false });
@@ -42,6 +41,20 @@ function App() {
     }
     authUser();
   }, [token]);
+
+  // useEffect(() => { // DEBUG login -- remove!
+  //   const signIn = async () => {
+  //     try {
+  //       const loginData = {username: "davidh", password: "welcome1"}
+  //       const newToken = await BoardGameFinderApi.login(loginData);
+  //       console.log("success! ", newToken);
+  //     } catch (err) {
+  //       console.error("Failed to load user", err);
+  //       setCurrentUser({ data: null, loaded: false });
+  //     }
+  //   }
+  //   signIn();
+  // }, []);
 
   /** Handles site-wide logout. */
   const logout = () => {
@@ -80,11 +93,11 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <UserContext.Provider value={{ currentUser, setCurrentUser, jobsApplied, setJobsApplied }}>
+        <UserContext.Provider value={{ currentUser, setCurrentUser, searchTerm, setSearchTerm }}>
           <NavBar logout={logout} />
           <main>
             <section className="col-md-8">
-              <RouteList login={login} signup={signup} />
+              <RouteList login={login} signup={signup} logout={logout} />
             </section>
           </main>
         </UserContext.Provider>

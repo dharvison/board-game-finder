@@ -1,16 +1,18 @@
 nav {
-    background-color: white;
+    background-color: blanchedalmond;
     border-bottom: 2px solid rgba(0, 0, 0, 0.125);
   }
   
   .nav-item {
-    margin-right: 2rem;
-    text-align: center;
+    margin-right: 1rem;
+    vertical-align: bottom;
+    white-space: nowrap;
   }
   
   nav a {
     color: rgba(0, 0, 0, 0.75);
     text-decoration: none;
+    vertical-align: bottom;
   }
   
   nav a.active {

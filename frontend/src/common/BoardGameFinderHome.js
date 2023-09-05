@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 /**
  * Homepage, it's not that exciting
  */
-function JoblyHome() {
+function BoardGameFinderHome() {
     const { currentUser } = useContext(UserContext);
 
     return (
@@ -18,7 +18,7 @@ function JoblyHome() {
                     </CardTitle>
                     <CardText>Everyone loves them!</CardText>
 
-                    {currentUser.loaded ? <h3>Welcome {currentUser.data.firstName}!</h3> : (
+                    {currentUser.loaded ? <h3>Welcome {currentUser.data.username}!</h3> : (
                         <>
                             <Link to="/login" className="btn btn-secondary mx-1">Login</Link>
                             or
@@ -31,4 +31,4 @@ function JoblyHome() {
     )
 }
 
-export default JoblyHome;
+export default BoardGameFinderHome;

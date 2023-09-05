@@ -3,25 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardBody, FormGroup, Input, Label } from "reactstrap";
 import Alerts from "../common/Alerts";
 
+import BoardGameFinderApi from "../apis/bgfAPI";
+
 /**
- * Login form
+ * Create/Edit list form
  */
-function LoginForm({ login }) {
+function ListForm() {
     const navigate = useNavigate();
 
     const initFormData = {
-        username: '',
-        password: '',
+        title: '',
+        blurb: '',
     };
     const [formData, setFormData] = useState(initFormData);
     const [formErrors, setFormErrors] = useState([]);
 
-    /** Try to create the user. Success? -> /companies */
+    /** Try to create the list. Success? -> /user/lists/:id */
     const handleSubmit = async (evt) => {
         evt.preventDefault();
-        const res = await login(formData);
+        console.log(formData)
+        const res = await BoardGameFinderApi.createList(formData);
+        console.log(res);
         if (res.success) {
-            navigate('/');
+            navigate(`/user/lists/${res.id}`);
         } else {
             setFormErrors(res.errors);
         }
@@ -30,6 +34,7 @@ function LoginForm({ login }) {
     /** Update form data field */
     function handleChange(evt) {
         const { name, value } = evt.target;
+        console.log(name, value)
         setFormData(data => ({
             ...data,
             [name]: value
@@ -37,18 +42,18 @@ function LoginForm({ login }) {
     }
 
     return (
-        <div className="LoginForm container col-md-6">
-            <h2>Login</h2>
+        <div className="ListForm container col-md-6">
+            <h2>Create List</h2>
             <Card>
                 <CardBody>
                     <form onSubmit={handleSubmit}>
                         <FormGroup>
-                            <Label htmlFor="username">Username</Label>
-                            <Input name="username" type="text" value={formData.username} onChange={handleChange} required />
+                            <Label htmlFor="title">Title</Label>
+                            <Input name="title" type="text" value={formData.title} onChange={handleChange} required />
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="password">password</Label>
-                            <Input name="password" type="password" value={formData.password} onChange={handleChange} required />
+                            <Label htmlFor="blurb">Blurb</Label>
+                            <Input name="blurb" type="text" value={formData.blurb} onChange={handleChange} required />
                         </FormGroup>
 
                         {formErrors.length > 0 ?
@@ -56,7 +61,7 @@ function LoginForm({ login }) {
                         }
 
                         <FormGroup>
-                            <Input type="submit" className="btn btn-secondary" value="Login" onSubmit={handleSubmit} />
+                            <Input type="submit" className="btn btn-secondary" value="Create List" onSubmit={handleSubmit} />
                         </FormGroup>
                     </form>
                 </CardBody>
@@ -65,4 +70,4 @@ function LoginForm({ login }) {
     )
 }
 
-export default LoginForm;
+export default ListForm;
