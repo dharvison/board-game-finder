@@ -13,7 +13,7 @@ const { BadRequestError } = require("../expressError");
 
 /** POST / { note } => { note } 
  * 
- * note should be { userId, gameId, note, own, wantToPlay } TODO external ID?
+ * note should be { userId, gameId, note, own, wantToPlay }
  * 
  * returns { id, userId, gameId, note, own, wantToPlay }
  * 
@@ -23,8 +23,10 @@ const { BadRequestError } = require("../expressError");
 router.post("/", ensureLoggedIn, async function (req, res, next) {
     try {
         // validate!
+        req.body.userId = res.locals.user.userId;
 
         const note = await Gamenote.create(req.body);
+        console.log(note)
         return res.status(201).json({ note });
     } catch (err) {
         return next(err);

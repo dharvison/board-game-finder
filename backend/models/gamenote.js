@@ -2,7 +2,8 @@
 
 const db = require("../db");
 const { sqlForPartialUpdate } = require("../helpers/sql");
-const { NotFoundError } = require("../expressError");
+const { NotFoundError, BadRequestError } = require("../expressError");
+const Game = require("./game");
 
 /** Related functions for games. */
 
@@ -25,7 +26,18 @@ class Gamenote {
         );
 
         if (duplicateCheck.rows[0]) {
-            throw new BadRequestError(`User ${userId}already has note from this game ${gameId}!`);
+            throw new BadRequestError(`User ${userId} already has note from this game ${gameId}!`);
+        }
+
+        // this isn't a real bug because we will have searched before
+        const gameExists = await db.query(
+            `SELECT bgg_id
+            from games
+            WHERE bgg_id = $1`,
+            [gameId],
+        );
+        if (gameExists.rows.length < 1) {
+            await Game.get(gameId);
         }
 
         const result = await db.query(
@@ -48,7 +60,7 @@ class Gamenote {
 
         const noteRes = result.rows[0];
 
-        return note;
+        return noteRes;
     }
 
     /** Find all note for given user.
@@ -98,16 +110,27 @@ class Gamenote {
                 n.note,
                 n.own,
                 n.want_to_play AS "wantToPlay"
-                g.title,
-                g.designer,
-                g.cover_url AS "cover_url",
-                g.year
            FROM gamenotes n
-            JOIN games g
-            ON n.game_id = g.id
            WHERE n.id = $1`,
             [noteId],
         );
+        // const noteRes = await db.query(
+        //     `SELECT n.id,
+        //         n.user_id AS "userId",
+        //         n.game_id AS "gameId",
+        //         n.note,
+        //         n.own,
+        //         n.want_to_play AS "wantToPlay"
+        //         g.title,
+        //         g.designer,
+        //         g.cover_url AS "cover_url",
+        //         g.year
+        //    FROM gamenotes n
+        //     JOIN games g
+        //     ON n.game_id = g.id
+        //    WHERE n.id = $1`,
+        //     [noteId],
+        // );
         const note = noteRes.rows[0];
 
         if (!note) throw new NotFoundError(`No note: ${noteId}`);

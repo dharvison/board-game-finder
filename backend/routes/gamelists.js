@@ -4,8 +4,8 @@
 
 // const jsonschema = require("jsonschema");
 
-const Gamelist = require("../models/user");
-const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
+const Gamelist = require("../models/gamelist");
+const { ensureLoggedIn, ensureAdmin, ensureCorrectUserOrAdmin } = require("../middleware/auth");
 const express = require("express");
 const router = new express.Router();
 const { BadRequestError } = require("../expressError");
@@ -31,6 +31,7 @@ router.get("/", async function (req, res, next) {
 router.post("/", ensureLoggedIn, async function (req, res, next) {
     try {
         // validate!
+        req.body.userId = res.locals.user.userId;
 
         const list = await Gamelist.create(req.body);
         return res.status(201).json({ list });

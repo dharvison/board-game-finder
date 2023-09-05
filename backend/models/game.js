@@ -93,10 +93,12 @@ class Game {
 
         if (!game) {
             const fetchedGame = await this.fetch([bggId]);
-            if (fetchedGame.length > 0) {
+            if (fetchedGame && fetchedGame.length > 0) {
                 game = fetchedGame[0];
                 // maybe only add on creation of Note or List?
                 this.create(game);
+            } else {
+                // TODO throw exception for missing games! on in FETCH
             }
         }
 
@@ -111,7 +113,8 @@ class Game {
      */
     static async fetch(bggIds) {
         const fetchedData = await fetchGameInfo(bggIds);
-        
+
+        // TODO throw exception for missing games!
         // TODO Store the data when ???
         // TODO include more data on direct fetch? or create another helper
 

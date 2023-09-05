@@ -63,28 +63,27 @@ class Gamelist {
      **/
     // TODO implement!
     static async get(listId) {
-        // const userRes = await db.query(
-        //     `SELECT username,
-        //           first_name AS "firstName",
-        //           last_name AS "lastName",
-        //           email,
-        //           is_admin AS "isAdmin"
-        //    FROM users
-        //    WHERE username = $1`,
-        //     [username],
-        // );
+        const listRes = await db.query(
+            `SELECT l.id,
+                  l.user_id AS "userId",
+                  l.title,
+                  l.blurb
+           FROM gamelists l
+           WHERE l.id = $1`,
+            [listId],
+        );
+        const list = listRes.rows[0];
 
-        // const user = userRes.rows[0];
+        if (!list) throw new NotFoundError(`No list: ${listId}`);
 
-        // if (!user) throw new NotFoundError(`No user: ${username}`);
-
+        // TODO get the games!
         // const userApplicationsRes = await db.query(
         //     `SELECT a.job_id
         //    FROM applications AS a
         //    WHERE a.username = $1`, [username]);
 
         // user.applications = userApplicationsRes.rows.map(a => a.job_id);
-        // return user;
+        return list;
     }
 
     /** Update gamelist data with `data`.
