@@ -99,7 +99,7 @@ function extractTitle(bggTitles, key=BBG_TITLE) {
 }
 
 
-/** Helper to extract primary title */
+/** Helper to extract designers */
 
 function extractDesigners(bggDesigners) {
     // multiple designers, combine
@@ -131,7 +131,7 @@ async function performSearch(query) {
     //      Syntax: /xmlapi/search?search=<searchString>
     //      Example: https://boardgamegeek.com/xmlapi/search?search=Crossbows%20and%20Catapults
 
-    // TODO build query? current;y can pass exact=1 just fine
+    // TODO build query? currently can pass exact=1 just fine
 
     try {
         const fetchedData = await axios.get(`${BGG_SEARCH_PREFIX}/search?query=${query}&type=boardgame`, {
@@ -157,8 +157,10 @@ async function performSearch(query) {
             for (const game of items.item) {
                 resultGames.push(searchParse(game));
             }
-        } else {
+        } else if (items.total == 1) {
             resultGames.push(searchParse(items.item));
+        } else {
+            return {error: 'No games!'};
         }
         // console.log(resultGames);
 

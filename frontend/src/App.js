@@ -96,7 +96,7 @@ function App() {
         <UserContext.Provider value={{ currentUser, setCurrentUser, searchTerm, setSearchTerm }}>
           <NavBar logout={logout} />
           <main>
-            <section className="col-md-10">
+            <section className="col-lg-8 col-md-10">
               <RouteList login={login} signup={signup} logout={logout} />
             </section>
           </main>

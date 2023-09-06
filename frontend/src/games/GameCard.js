@@ -3,17 +3,18 @@ import { Link } from "react-router-dom";
 import { Card, CardBody, CardTitle, CardText } from "reactstrap";
 
 /**
- * Search Game Card Results
+ * Game Card
  */
-function SearchGameCard({game}) {
+function GameCard({ game }) {
 
+    const imgComp = game.coverUrl ? <img src={game.coverUrl} /> : <></>;
 
     return (
         <Card>
             <CardBody>
                 <CardTitle><Link to={`/games/${game.bggId}`}>{game.title}</Link></CardTitle>
                 <CardText>
-                    {/* TODO image/thumbnail */}
+                    {imgComp}
                     {game.year}
                 </CardText>
             </CardBody>
@@ -21,4 +22,4 @@ function SearchGameCard({game}) {
     );
 }
 
-export default SearchGameCard;
+export default GameCard;

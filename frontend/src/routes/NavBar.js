@@ -14,7 +14,7 @@ function NavBar({ logout }) {
 
   const loggedInLeftLinks = () => (
     <NavItem>
-      <NavLink to="/browse" className="nav-item">Browse</NavLink>
+      <NavLink to="/trending" className="nav-item">Browse</NavLink>
       <NavLink to="/user/notes/create" className="nav-item">Create Note</NavLink>
       <NavLink to="/user/lists/create" className="nav-item">Create List</NavLink>
       {/* TODO dropdown! */}

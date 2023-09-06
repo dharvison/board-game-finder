@@ -210,6 +210,19 @@ class BoardGameFinderApi {
     return res;
   }
 
+  /**
+   * 
+   * Trending
+   * 
+   */
+
+  /** Fetch trending */
+
+  static async trending() {
+    let res = await this.request(`trending/hot`);
+    return res;
+  }
+
 }
 
 export default BoardGameFinderApi;

@@ -13,6 +13,7 @@ import ProfileForm from "../users/ProfileForm";
 // import ProfileView from "../users/ProfileView"
 // import UserContext from "../auth/UserContext";
 import SearchResults from "../search/SearchResults";
+import TrendingGames from "../trending/trending";
 
 /**
  * Routes for App
@@ -23,15 +24,17 @@ function RouteList({ signup, login }) {
     const routeComp = [];
     // if (currentUser.loaded) {
         // Logged in user can access protected routes
-        routeComp.push(<Route path="/games/:bggId" element={<GameDetail />} />);
+        routeComp.push(<Route key="game-view" path="/games/:bggId" element={<GameDetail />} />);
+        routeComp.push(<Route key="note-create" path="/user/notes/create" element={<NoteForm />} />);
+        routeComp.push(<Route key="note-view" path="/user/notes/:noteId" element={<NoteDetail/>} />);
+        routeComp.push(<Route key="list-create" path="/user/lists/create" element={<ListForm />} />);
+        routeComp.push(<Route key="list-view" path="/user/lists/:listId" element={<ListDetail/>} />);
 
-        routeComp.push(<Route path="/user/notes/create" element={<NoteForm />} />);
-        routeComp.push(<Route path="/user/notes/:noteId" element={<NoteDetail/>} />);
-        routeComp.push(<Route path="/user/lists/create" element={<ListForm />} />);
-        routeComp.push(<Route path="/user/lists/:listId" element={<ListDetail/>} />);
         // routeComp.push(<Route key="profile" path="/profile" element={<ProfileView />} />);
         routeComp.push(<Route key="profile-update" path="/user/profile" element={<ProfileForm />} />);
+        
         routeComp.push(<Route key="search" path="/search" element={SearchResults()} />);
+        routeComp.push(<Route key="trending" path="/trending" element={TrendingGames()} />);
     // } else {
         // Anon users can only access signup and login
         // routeComp.push(<Route path="/search" element={SearchResults({ searchTerm })} />);
