@@ -12,7 +12,7 @@ import NoteDetail from "../notes/NoteDetail";
 import ProfileForm from "../users/ProfileForm";
 // import ProfileView from "../users/ProfileView"
 // import UserContext from "../auth/UserContext";
-// import SearchResults from "../search/SearchResults";
+import SearchResults from "../search/SearchResults";
 
 /**
  * Routes for App
@@ -31,7 +31,7 @@ function RouteList({ signup, login }) {
         routeComp.push(<Route path="/user/lists/:listId" element={<ListDetail/>} />);
         // routeComp.push(<Route key="profile" path="/profile" element={<ProfileView />} />);
         routeComp.push(<Route key="profile-update" path="/user/profile" element={<ProfileForm />} />);
-        // routeComp.push(<Route key="search" path="/search" element={SearchResults({ searchTerm })} />);
+        routeComp.push(<Route key="search" path="/search" element={SearchResults()} />);
     // } else {
         // Anon users can only access signup and login
         // routeComp.push(<Route path="/search" element={SearchResults({ searchTerm })} />);

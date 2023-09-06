@@ -5,8 +5,8 @@ main {
   align-items: center;
   padding-top: 15vh;
   height: calc(100vh - 56px); /* router view - navbar height */
-  color: white;
   overflow: scroll;
+  color: white;
 }
 
 .card {

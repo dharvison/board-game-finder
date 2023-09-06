@@ -53,7 +53,8 @@ function ListForm() {
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="blurb">Blurb</Label>
-                            <Input name="blurb" type="text" value={formData.blurb} onChange={handleChange} required />
+                            {/* <Input name="blurb" type="text" value={formData.blurb} onChange={handleChange} required /> */}
+                            <textarea className="form-control" name="blurb" rows={5} onChange={handleChange} required>{formData.blurb}</textarea>
                         </FormGroup>
 
                         {formErrors.length > 0 ?

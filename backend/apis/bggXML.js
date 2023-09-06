@@ -84,11 +84,17 @@ function extractTitle(bggTitles, key=BBG_TITLE) {
     if (Array.isArray(bggTitles)) {
         for (const title of bggTitles) {
             if (title.primary) {
+                // if (!Object.hasOwn(title, key)) {
+                //     console.log(title);
+                // }
                 return title[key];
             }
         }
     }
     // only 1 title
+    // if (!Object.hasOwn(bggTitles, key)) {
+    //     console.log(bggTitles);
+    // }
     return bggTitles[key];
 }
 
@@ -136,11 +142,13 @@ async function performSearch(query) {
         });
 
         const searchParse = (bggGame) => {
-            return {
+            const parsed = {
                 bggId: bggGame.id,
                 title: extractTitle(bggGame.name, "value"),
-                year: bggGame.yearpublished.value,
-            }
+                year: bggGame.yearpublished ? bggGame.yearpublished.value : 'Unknown',
+            };
+            // console.log(parsed);
+            return parsed;
         }
 
         const { items } = JSON.parse(fetchedData.data);
@@ -152,11 +160,11 @@ async function performSearch(query) {
         } else {
             resultGames.push(searchParse(items.item));
         }
-        console.log(resultGames);
+        // console.log(resultGames);
 
         return resultGames;
     } catch (err) {
-        // TODO Do something
+        console.log(err);
     }
 }
 

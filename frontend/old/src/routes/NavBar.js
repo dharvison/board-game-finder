@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import "./NavBar.css";
 
 import { NavLink } from "react-router-dom";
-import { Navbar, Nav, NavItem, Collapse } from "reactstrap";
+import { Navbar, Nav, NavItem, Input, Collapse } from "reactstrap";
 import UserContext from "../auth/UserContext";
 import SearchBar from "../search/SearchBar";
 
@@ -15,15 +15,14 @@ function NavBar({ logout }) {
   const loggedInLeftLinks = () => (
     <NavItem>
       <NavLink to="/browse" className="nav-item">Browse</NavLink>
-      <NavLink to="/user/notes/create" className="nav-item">Create Note</NavLink>
-      <NavLink to="/user/lists/create" className="nav-item">Create List</NavLink>
+      <NavLink to="/create" className="nav-item">Create List</NavLink>
       {/* TODO dropdown! */}
     </NavItem>
   )
 
   const loggedInRightLinks = () => (
     <NavItem>
-      <NavLink to="/user/profile" className="nav-item">Profile</NavLink>
+      <NavLink to="/profile" className="nav-item">Profile</NavLink>
       <NavLink to="/logout" onClick={logout} className="nav-item">Logout</NavLink>
     </NavItem>
   )
@@ -36,26 +35,26 @@ function NavBar({ logout }) {
   )
 
   return (
-    <Navbar expand="md">
-      <Nav navbar>
-      <NavLink to="/" className="navbar-brand">
-        Bored? Game Finder
-      </NavLink>
-      {/* TODO logic for collapsing! */}
-        <Collapse isOpen={true} className="my-auto">
-          <Nav navbar>
+    <div>
+      <Navbar expand="md">
+        <NavLink to="/" className="navbar-brand">
+          Bored? Game Finder
+        </NavLink>
+        {/* TODO logic for collapsing! */}
+        <Collapse isOpen={true}>
+          <Nav className="mr-auto" navbar>
             {currentUser.loaded ? loggedInLeftLinks() : ''}
           </Nav>
         </Collapse>
-      </Nav>
-      <SearchBar className="mr-auto" />
+
+        <SearchBar />
 
 
-
-      <Nav className="ml-auto" navbar>
-        {currentUser.loaded ? loggedInRightLinks() : anonRightLinks()}
-      </Nav>
-    </Navbar>
+        <Nav className="ml-auto" navbar>
+          {currentUser.loaded ? loggedInRightLinks() : anonRightLinks()}
+        </Nav>
+      </Navbar>
+    </div>
   );
 }
 

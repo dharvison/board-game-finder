@@ -16,8 +16,9 @@ router.get("/:query", async function (req, res, next) {
         // TODO make smarter
         // do something smart with the query to search locally and BGG?
         // grab thumbnails in aggregate call with all bggIds returned?
-
+        console.log(req.params.query)
         const results = await performSearch(req.params.query);
+        console.log(results)
         return res.json(results);
     } catch (err) {
         return next(err);

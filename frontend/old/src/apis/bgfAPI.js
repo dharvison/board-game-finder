@@ -18,7 +18,6 @@ class BoardGameFinderApi {
 
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${BoardGameFinderApi.token}` };
-    // data.userId = BoardGameFinderApi.userId;
     const params = (method === "get")
       ? data
       : {};
@@ -78,7 +77,6 @@ class BoardGameFinderApi {
   /** Get details on a game by id. */
   //TODO
   static async getGame(id) {
-    console.log(`requesting info for game ${id}`);
     let res = await this.request(`game/${id}`);
     return res.game;
   }
@@ -99,7 +97,7 @@ class BoardGameFinderApi {
   /** Create a game list. */
   // TODO
   static async createList(data) {
-    let res = await this.request(`list/`, data, "post");
+    let res = await this.request(`list/`);
     return res.list;
   }
 
@@ -145,7 +143,7 @@ class BoardGameFinderApi {
   /** Create a game note. */
   // TODO
   static async createNote(data) {
-    let res = await this.request(`note/`, data, "post");
+    let res = await this.request(`note/`);
     return res.note;
   }
 
