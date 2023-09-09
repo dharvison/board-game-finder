@@ -39,12 +39,12 @@ class Gamelist {
      * Returns [{ id, userId, title, blurb }, ...]
      **/
 
-    static async findAll(userId) {
+    static async findUserLists(userId) {
         const result = await db.query(
             `SELECT id,
                   user_id AS "userId",
                   title,
-                  blurb,
+                  blurb
            FROM gamelists
            WHERE user_id = $1
            ORDER BY title`,
@@ -77,12 +77,18 @@ class Gamelist {
         if (!list) throw new NotFoundError(`No list: ${listId}`);
 
         // TODO get the games!
-        // const userApplicationsRes = await db.query(
-        //     `SELECT a.job_id
-        //    FROM applications AS a
-        //    WHERE a.username = $1`, [username]);
+        const gamesRes = await db.query(
+            `SELECT g.bgg_id AS "bggId",
+                    g.title,
+                    g.designer,
+                    g.year,
+                    g.cover_url AS "coverUrl"
+           FROM gamelists l
+             JOIN gamelist_games gl ON l.id = gl.gamelist_id
+             JOIN games g ON g.bgg_id = gl.game_id
+           WHERE l.id = $1`, [listId]);
 
-        // user.applications = userApplicationsRes.rows.map(a => a.job_id);
+        list.games = gamesRes.rows; // TODO maybe map?
         return list;
     }
 
@@ -107,7 +113,7 @@ class Gamelist {
             });
         const idVarIdx = "$" + (values.length + 1);
 
-        const querySql = `UPDATE games 
+        const querySql = `UPDATE gamelists 
                       SET ${setCols} 
                       WHERE id = ${idVarIdx} 
                       RETURNING id,

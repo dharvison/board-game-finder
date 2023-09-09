@@ -63,7 +63,7 @@ router.patch("/:id", ensureLoggedIn, async function (req, res, next) {
     try {
         // validate!
 
-        const note = await Gamenote.update(req.params.id, req.body);
+        const game = await Gamenote.update(req.params.id, req.body);
         return res.json({ game });
     } catch (err) {
         return next(err);

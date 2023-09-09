@@ -66,7 +66,34 @@ class BoardGameFinderApi {
 
   static async saveProfile(username, data) {
     let res = await this.request(`user/${username}`, data, "patch");
-    return res.user;
+    return { success: true, user: res.user };
+  }
+
+  /** Get user lists. */
+
+  static async getUserLists(userId) {
+    let res = await this.request(`user/${userId}/lists`);
+    return res.lists;
+  }
+
+  /** Get user notes. */
+
+  static async getUserNotes(userId) {
+    let res = await this.request(`user/${userId}/notes`);
+    return res.notes;
+  }
+
+  /** Get user note for game. */
+
+  static async getUserNoteForGame(userId, bggId) {
+    let res = await this.request(`user/${userId}/note/${bggId}`);
+
+    // there is no note!
+    if (res.result && res.result === 'none') {
+      return null;
+    }
+
+    return res.note;
   }
 
   /**
@@ -78,7 +105,6 @@ class BoardGameFinderApi {
   /** Get details on a game by id. */
   //TODO
   static async getGame(id) {
-    console.log(`requesting info for game ${id}`);
     let res = await this.request(`game/${id}`);
     return res.game;
   }
@@ -100,14 +126,14 @@ class BoardGameFinderApi {
   // TODO
   static async createList(data) {
     let res = await this.request(`list/`, data, "post");
-    return res.list;
+    return { success: true, list: res.list };
   }
 
   /** Update details for a game list by id. */
   // TODO
   static async updateList(id, data) {
     let res = await this.request(`list/${id}`, data, "patch");
-    return res.list;
+    return { success: true, list: res.list };
   }
 
   /** Delete a game list by id. */
@@ -146,14 +172,14 @@ class BoardGameFinderApi {
   // TODO
   static async createNote(data) {
     let res = await this.request(`note/`, data, "post");
-    return res.note;
+    return { success: true, note: res.note };
   }
 
   /** Update details on a game note by id. */
   // TODO
   static async updateNote(id, data) {
     let res = await this.request(`note/${id}`, data, "patch");
-    return res.note;
+    return { success: true, note: res.note };
   }
 
   /** Delete a game note by id. */
@@ -186,7 +212,7 @@ class BoardGameFinderApi {
   /** Fetch all messages for a user */
   // TODO
   static async getUserMessages(username) {
-    let res = await this.request(`message/`);
+    let res = await this.request(`${username}/msgs`);
     return res.message;
   }
 

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import BoardGameFinderApi from "../apis/bgfAPI";
-import { Card, CardBody } from "reactstrap";
+import { CardBody, CardImg, CardSubtitle, CardTitle } from "reactstrap";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 /**
- * Game Detail page
+ * Game Detail
  */
-function GameDetail() {
-    const { bggId } = useParams();
+function GameDetail({ bggId }) {
     const [game, setGame] = useState(null);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         const fetchGame = async () => {
@@ -18,9 +19,15 @@ function GameDetail() {
             } catch (err) {
                 console.error(err);
             }
+            setLoaded(true);
         }
+        setLoaded(false);
         fetchGame();
     }, [bggId]);
+
+    if (!loaded) {
+        return (<LoadingSpinner />);
+    }
 
     if (!game) {
         return (
@@ -28,19 +35,16 @@ function GameDetail() {
         )
     }
 
-    // TODO make useful
     return (
-        <div className="GameDetail container col-md-6">
-            <Card>
-                <CardBody>
-                    <h2>{game.title}</h2>
-                    <h6 className="subtitle">{game.designer}</h6>
-                    <h6 className="subtitle">{game.year}</h6>
-                    <img src={game.coverUrl} width={500} />
-
-                </CardBody>
-            </Card>
-        </div>
+        <>
+            <CardTitle><Link to={`https://boardgamegeek.com/boardgame/${game.bggId}/`} target="_blank">{game.title}</Link></CardTitle>
+            <CardSubtitle>Designed by {game.designer}</CardSubtitle>
+            <CardSubtitle>Published {game.year}</CardSubtitle>
+            <CardBody>
+                <CardImg src={game.coverUrl} alt={`Cover for ${game.title}`} />
+            </CardBody>
+            {/* TODO Add to list! */}
+        </>
     );
 }
 

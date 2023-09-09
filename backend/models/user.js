@@ -201,7 +201,7 @@ class User {
                                 email,
                                 bio,
                                 country,
-                                city
+                                city,
                                 is_admin AS "isAdmin"`;
         const result = await db.query(querySql, [...values, username]);
         const user = result.rows[0];

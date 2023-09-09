@@ -5,10 +5,12 @@
 // const jsonschema = require("jsonschema");
 
 const User = require("../models/user");
-const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
+const { ensureCorrectUserOrAdmin, ensureAdmin, ensureLoggedIn } = require("../middleware/auth");
 const express = require("express");
 const router = new express.Router();
 const { BadRequestError } = require("../expressError");
+const Gamenote = require("../models/gamenote");
+const Gamelist = require("../models/gamelist");
 
 // POST create for admin only?
 
@@ -37,7 +39,7 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  * Authorization required: admin or same user-as-:username
  **/
 
-router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/:username", ensureLoggedIn, async function (req, res, next) {
     try {
         const user = await User.get(req.params.username);
         return res.json({ user });
@@ -56,7 +58,7 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
     try {
         // const validator = jsonschema.validate(req.body, userUpdateSchema);
         // if (!validator.valid) {
@@ -76,7 +78,7 @@ router.patch("/:username", ensureCorrectUserOrAdmin, async function (req, res, n
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.delete("/:username", ensureAdmin, async function (req, res, next) {
     try {
         await User.remove(req.params.username);
         return res.json({ deleted: req.params.username });
@@ -89,16 +91,38 @@ router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, 
 
 /** GET /[username]/notes => { notes list! }
  *
- * Returns { username, firstName, lastName, isAdmin, jobs }
- *   where jobs is { id, title, companyHandle, companyName, state }
+ * Returns [{ id, userId, gameId, note, own, wantToPlay }, ...]
  *
- * Authorization required: admin or same user-as-:username
- **/ //TODO
+ * Authorization required: loggedIn
+ **/
 
-router.get("/:username/notes", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/:userId/notes", ensureLoggedIn, async function (req, res, next) {
     try {
-        const user = await User.get(req.params.username);
-        return res.json({ user });
+        const notes = await Gamenote.findUserNotes(req.params.userId);
+        return res.json({ notes });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET /[username]/notes/[bggId] => { notes }
+ *
+ * Returns { id, userId, gameId, note, own, wantToPlay } if exists
+ * or { result: 'none' }
+ *
+ * Authorization required: loggedIn
+ **/
+
+router.get("/:userId/note/:bggId", ensureLoggedIn, async function (req, res, next) {
+    try {
+        const note = await Gamenote.findUserNoteForGame(req.params.userId, req.params.bggId);
+
+        if (note != null) {
+            return res.json({ note });
+        } else {
+            return res.json({ result: 'none' });
+        }
+
     } catch (err) {
         return next(err);
     }
@@ -106,16 +130,15 @@ router.get("/:username/notes", ensureCorrectUserOrAdmin, async function (req, re
 
 /** GET /[username]/lists => { list list! }
  *
- * Returns { username, firstName, lastName, isAdmin, jobs }
- *   where jobs is { id, title, companyHandle, companyName, state }
+ * Returns [{ id, userId, title, blurb }, ...]
  *
- * Authorization required: admin or same user-as-:username
- **/ //TODO
+ * Authorization required: loggedIn
+ **/
 
- router.get("/:username/lists", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/:userId/lists", ensureLoggedIn, async function (req, res, next) {
     try {
-        const user = await User.get(req.params.username);
-        return res.json({ user });
+        const lists = await Gamelist.findUserLists(req.params.userId);
+        return res.json({ lists });
     } catch (err) {
         return next(err);
     }
@@ -129,7 +152,7 @@ router.get("/:username/notes", ensureCorrectUserOrAdmin, async function (req, re
  * Authorization required: admin or same user-as-:username
  **/ //TODO
 
- router.get("/:username/msgs", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/:username/msgs", ensureLoggedIn, async function (req, res, next) {
     try {
         const user = await User.get(req.params.username);
         return res.json({ user });

@@ -42,20 +42,6 @@ function App() {
     authUser();
   }, [token]);
 
-  // useEffect(() => { // DEBUG login -- remove!
-  //   const signIn = async () => {
-  //     try {
-  //       const loginData = {username: "davidh", password: "welcome1"}
-  //       const newToken = await BoardGameFinderApi.login(loginData);
-  //       console.log("success! ", newToken);
-  //     } catch (err) {
-  //       console.error("Failed to load user", err);
-  //       setCurrentUser({ data: null, loaded: false });
-  //     }
-  //   }
-  //   signIn();
-  // }, []);
-
   /** Handles site-wide logout. */
   const logout = () => {
     setCurrentUser({ data: null, loaded: false });

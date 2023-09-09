@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BoardGameFinderApi from "../apis/bgfAPI";
-import { Card, CardBody } from "reactstrap";
+import { Card, CardBody, CardText } from "reactstrap";
 
 /**
  * List Detail page
@@ -9,6 +9,7 @@ import { Card, CardBody } from "reactstrap";
 function ListDetail() {
     const { listId } = useParams();
     const [list, setList] = useState(null);
+    // const [games, setGames] = useState([]); // TODO
 
     useEffect(() => {
         const fetchList = async () => {
@@ -29,17 +30,25 @@ function ListDetail() {
         )
     }
 
+    const gamesComp = list.games.map(g => (
+        <li key={g.bggId}>{g.title}</li>
+    ));
+
     // TODO make useful
     return (
         <div className="ListDetail container col-md-6">
+            <h1 className="display-title">{list.title}</h1>
             <Card>
                 <CardBody>
-                    <h2>{list.id}</h2>
-                    <h6 className="subtitle">{list.userId}</h6>
-                    <h6 className="subtitle">{list.title}</h6>
-                    <h6 className="subtitle">{list.blurb}</h6>
+                    <CardText>{list.blurb}</CardText>
+                    
+                    <ul>
+                        {gamesComp}
+                    </ul>
 
                 </CardBody>
+                <Link className="btn btn-primary" to={`/lists/${list.id}/edit`}>Edit List</Link>
+                <Link className="btn btn-primary" to={`/lists/${list.id}/edit`}>Add Game TODO</Link>
             </Card>
         </div>
     );

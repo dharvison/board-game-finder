@@ -147,7 +147,6 @@ async function performSearch(query) {
                 title: extractTitle(bggGame.name, "value"),
                 year: bggGame.yearpublished ? bggGame.yearpublished.value : 'Unknown',
             };
-            // console.log(parsed);
             return parsed;
         }
 
@@ -162,7 +161,6 @@ async function performSearch(query) {
         } else {
             return {error: 'No games!'};
         }
-        // console.log(resultGames);
 
         return resultGames;
     } catch (err) {
@@ -205,7 +203,6 @@ async function hotItems(type='boardgame') {
         } else {
             hotGames.push(hotParse(items.item));
         }
-        console.log(hotGames);
 
         return hotGames;
     } catch (err) {

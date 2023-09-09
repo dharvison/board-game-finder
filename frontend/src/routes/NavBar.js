@@ -15,15 +15,15 @@ function NavBar({ logout }) {
   const loggedInLeftLinks = () => (
     <NavItem>
       <NavLink to="/trending" className="nav-item">Browse</NavLink>
-      <NavLink to="/user/notes/create" className="nav-item">Create Note</NavLink>
-      <NavLink to="/user/lists/create" className="nav-item">Create List</NavLink>
+      {/* <NavLink to="/notes/create" className="nav-item">Create Note</NavLink> */}
+      <NavLink to="/lists/create" className="nav-item">Create List</NavLink>
       {/* TODO dropdown! */}
     </NavItem>
   )
 
   const loggedInRightLinks = () => (
     <NavItem>
-      <NavLink to="/user/profile" className="nav-item">Profile</NavLink>
+      <NavLink to="/users/profile" className="nav-item">Profile</NavLink>
       <NavLink to="/logout" onClick={logout} className="nav-item">Logout</NavLink>
     </NavItem>
   )

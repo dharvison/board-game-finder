@@ -1,48 +1,56 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import BoardGameFinderApi from "../apis/bgfAPI";
-import { Card, CardBody } from "reactstrap";
+import { CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap";
+import UserContext from "../auth/UserContext";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 /**
- * Note Detail page
+ * Note Detail
  */
-function NoteDetail() {
-    const { noteId } = useParams();
+function NoteDetail({ bggId }) {
+    const { currentUser } = useContext(UserContext);
     const [note, setNote] = useState(null);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                const noteData = await BoardGameFinderApi.getNote(noteId);
-                console.log(noteData)
-                setNote(noteData);
+                const userNote = await BoardGameFinderApi.getUserNoteForGame(currentUser.data.id, bggId);
+                setNote(userNote);
             } catch (err) {
                 console.error(err);
             }
+            setLoaded(true);
         }
+        setLoaded(false);
         fetchNote();
-    }, [noteId]);
+    }, [bggId, currentUser]);
+
+    if (!loaded) {
+        return (<LoadingSpinner />);
+    }
 
     if (!note) {
         return (
-            <></>
+            <>
+                <CardTitle>My Note <Link className="btn btn-sm btn-outline-primary" to={`/notes/create/${bggId}`}>Create Note</Link></CardTitle>
+                <CardBody>
+                    <CardText>None</CardText>
+                </CardBody>
+            </>
         )
     }
 
-    // TODO make useful
     return (
-        <div className="NoteDetail container col-md-6">
-            <Card>
-                <CardBody>
-                    <h2>{note.id}</h2>
-                    <h6 className="subtitle">{note.gameId}</h6>
-                    <h6 className="subtitle">{note.note}</h6>
-                    <h6 className="subtitle">{note.own ? 'I own it' : 'nope'}</h6>
-                    <h6 className="subtitle">{note.wantToPlay ? 'let us play' : 'naw'}</h6>
-
-                </CardBody>
-            </Card>
-        </div>
+        <>
+            <CardTitle>My Note <Link className="btn btn-sm btn-outline-primary" to={`/notes/${note.id}/edit `}>Edit Note</Link></CardTitle>
+            <CardBody>
+                <CardSubtitle>{note.own ? "Own it" : "Don't Own it"}</CardSubtitle>
+                <CardSubtitle>{note.wantToPlay ? "Let's play it" : "Not looking to play"}</CardSubtitle>
+                <CardText>{note.note}</CardText>
+            </CardBody>
+        </>
     );
 }
 

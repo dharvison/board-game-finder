@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BoardGameFinderApi from "../apis/bgfAPI";
-
-import UserContext from "../auth/UserContext";
 import GameCard from "../games/GameCard";
+import { Row } from "reactstrap";
 
 /**
  * Trending Games
@@ -27,9 +26,9 @@ function TrendingGames() {
     ));
 
     return (
-        <div>
+        <Row className="container">
             {resultsComp}
-        </div>
+        </Row>
     );
 }
 

@@ -14,16 +14,14 @@ function SearchBar() {
 
     const handleSubmit = async (evt) => {
         evt.preventDefault();
-        // console.log(`search! ${localSearchTerm}`);
         setSearchTerm(localSearchTerm);
         navigate('/search');
     }
 
     /** Update form data field */
     function handleChange(evt) {
-        const { name, value } = evt.target;
+        const { value } = evt.target;
         setLocalSearchTerm(value);
-        // console.log(value);
     }
 
     return (

@@ -69,40 +69,54 @@ class Gamenote {
      **/
 
     static async findUserNotes(userId) {
-        // TODO this should probably get the game's title at least!
+        const result = await db.query(
+            `SELECT id,
+                n.user_id AS "userId",
+                n.game_id AS "gameId",
+                g.title,
+                n.note,
+                n.own,
+                n.want_to_play AS "wantToPlay"
+           FROM gamenotes n
+             JOIN games g ON n.game_id = g.bgg_id
+           WHERE n.user_id = $1
+           ORDER BY n.id`,
+            [userId]);
+
+        return result.rows;
+    }
+
+    /** Find note for given user and game.
+     *
+     * Returns { id, userId, gameId, note, own, wantToPlay } or null if none exists
+     **/
+
+    static async findUserNoteForGame(userId, bggId) {
         const result = await db.query(
             `SELECT id,
                 user_id AS "userId",
-                game_id AS "gameId",
                 note,
                 own,
                 want_to_play AS "wantToPlay"
            FROM gamenotes
+           WHERE user_id = $1 AND game_id = $2
            ORDER BY id`,
-        );
+            [userId, bggId]);
 
-        return result.rows;
+        const note = result.rows[0];
+
+        return note ? note : null;
     }
 
     /** Given a noteId, return note joined with game info
      *
      * Returns { id, userId, note, own, wantToPlay, game }
-     *      where game is { id, title, designer, coverUrl, year }
+     *      where game is { bggId, title, designer, coverUrl, year }
      *
      * Throws NotFoundError if gamenote not found.
      **/
 
     static async get(noteId) {
-        const existRes = await db.query(
-            `SELECT id
-            FROM gamenotes
-            WHERE id = $1`,
-            [noteId],
-        );
-        const exists = existRes.rows[0];
-        if (!exists) throw new NotFoundError(`No note: ${noteId}`);
-
-        // TODO this is probably wrong
         const noteRes = await db.query(
             `SELECT n.id,
                 n.user_id AS "userId",
@@ -114,40 +128,18 @@ class Gamenote {
            WHERE n.id = $1`,
             [noteId],
         );
-        // const noteRes = await db.query(
-        //     `SELECT n.id,
-        //         n.user_id AS "userId",
-        //         n.game_id AS "gameId",
-        //         n.note,
-        //         n.own,
-        //         n.want_to_play AS "wantToPlay"
-        //         g.title,
-        //         g.designer,
-        //         g.cover_url AS "cover_url",
-        //         g.year
-        //    FROM gamenotes n
-        //     JOIN games g
-        //     ON n.game_id = g.id
-        //    WHERE n.id = $1`,
-        //     [noteId],
-        // );
         const note = noteRes.rows[0];
-
         if (!note) throw new NotFoundError(`No note: ${noteId}`);
-        // TODO verify
+
+        const game = await Game.get(note.gameId);
+
         return {
             id: note.id,
             userId: note.userId,
             note: note.note,
             own: note.own,
             wantToPlay: note.wantToPlay,
-            game: {
-                id: note.gameId,
-                title: note.title,
-                designer: note.designer,
-                coverUrl: note.coverUrl,
-                year: note.year,
-            },
+            game: game,
         }
     }
 

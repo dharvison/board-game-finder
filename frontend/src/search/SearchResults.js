@@ -3,15 +3,14 @@ import BoardGameFinderApi from "../apis/bgfAPI";
 
 import UserContext from "../auth/UserContext";
 import GameCard from "../games/GameCard";
-import { Spinner } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 /**
  * Search Results
  */
 function SearchResults() {
-    const navigate = useNavigate();
     const [results, setResults] = useState([]);
+    const [emptyResults, setEmptyResults] = useState(false);
     const { searchTerm, setSearchTerm } = useContext(UserContext);
 
     useEffect(() => {
@@ -22,40 +21,38 @@ function SearchResults() {
                     setResults(result);
                 } else {
                     console.log(result);
-                    // TODO DISPLAY
+                    if (result.error === "No games!") {
+                        setEmptyResults(true);
+                    }
                 }
             } catch (err) {
                 console.error(err);
             }
         }
         setResults([]);
-        fetchSearchResults();
+        setEmptyResults(false);
+        
+        if (searchTerm != null && searchTerm.length > 0) {
+            fetchSearchResults();
+        }
     }, [searchTerm, setSearchTerm]);
+
+    if (searchTerm == null || searchTerm.length < 1) {
+        return (<div><h1 className="display-title">Search term required! Enter a search above.</h1></div>);
+    }
+
+    const spinnerComp = (!results || results.length === 0) && !emptyResults ? <LoadingSpinner /> : <></>;
 
     const resultsComp = results.map(result => (
         <GameCard game={result} key={result.bggId} />
     ));
 
-    if (searchTerm == null || searchTerm.length < 1) {
-        return (
-            <div>
-                <h1>Search term required!</h1>
-            </div>
-        );
-    }
-
-    if (!results || results.length == 0) {
-        return (
-            <div>
-                <h1>Results for {searchTerm} <Spinner type="border" color="primary" /></h1>
-            </div>
-        );
-    }
+    const emptyComp = emptyResults ? <h1>Nothing!</h1> : <></>;
 
     return (
         <div>
-            <h1>Results for {searchTerm}</h1>
-            {resultsComp}
+            <h1><span className="display-title">Search Results for {searchTerm}</span> {spinnerComp}</h1>
+            {resultsComp}{emptyComp}
         </div>
     );
 }

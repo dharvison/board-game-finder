@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardBody, FormGroup, Input, Label } from "reactstrap";
+import { CardBody, CardTitle, FormGroup, Input, Label } from "reactstrap";
 import Alerts from "../common/Alerts";
 
 import BoardGameFinderApi from "../apis/bgfAPI";
@@ -8,69 +8,92 @@ import BoardGameFinderApi from "../apis/bgfAPI";
 /**
  * Create/Edit note form
  */
-function NoteForm() {
+function NoteForm({ bggId, note }) {
     const navigate = useNavigate();
 
     const initFormData = {
-        gameId: '',
-        note: '',
-        own: false,
-        wantToPlay: false,
+        gameId: bggId,
+        note: note ? note.note : '',
+        own: note ? note.own : false,
+        wantToPlay: note ? note.wantToPlay : false,
     };
+
     const [formData, setFormData] = useState(initFormData);
     const [formErrors, setFormErrors] = useState([]);
 
-    /** Try to create the note. Success? -> /user/note/:id */
+    /** Try to create/update the note. Success? -> /games/:bggId */
     const handleSubmit = async (evt) => {
         evt.preventDefault();
-        const res = await BoardGameFinderApi.createNote(formData);
-        console.log(res);
-        if (res.success) {
-            navigate(`/user/notes/${res.id}`);
-        } else {
-            setFormErrors(res.errors);
+        try {
+            let res;
+            if (note) {
+                delete formData.gameId;
+                res = await BoardGameFinderApi.updateNote(note.id, formData)
+            } else {
+                res = await BoardGameFinderApi.createNote(formData);
+            }
+    
+            if (res.success) {
+                navigate(`/games/${bggId}`);
+            } else {
+                setFormErrors(res.errors);
+            }
+        } catch (err) {
+            console.error(err);
         }
     }
 
     /** Update form data field */
     function handleChange(evt) {
         const { name, value } = evt.target;
-        console.log(name, value)
         setFormData(data => ({
             ...data,
             [name]: value
         }));
     }
 
-    return (
-        <div className="NoteForm container col-md-6">
-            <h2>Create Note</h2>
-            <Card>
-                <CardBody>
-                    <form onSubmit={handleSubmit}>
-                        <FormGroup>
-                            <Label htmlFor="gameId">gameId</Label>
-                            <Input name="gameId" type="text" value={formData.gameId} onChange={handleChange} required />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="note">Note</Label>
-                            {/* <Input name="note" type="text" value={formData.note} onChange={handleChange} required /> */}
-                            <textarea className="form-control" name="note" rows={5} onChange={handleChange} required>{formData.note}</textarea>
-                        </FormGroup>
-                        {/* TODO own and wantToPlay as check box! */}
+    function handleCheck(evt) {
+        const { name } = evt.target;
+        // Toggle!
+        setFormData(data => ({
+            ...data,
+            [name]: !formData[name]
+        }));
+    }
 
-                        {formErrors.length > 0 ?
-                            <Alerts type="danger" messages={formErrors} /> : null
-                        }
+    return (<>
+        <CardTitle>{note ? "Edit Note" : "Create Note"}</CardTitle>
+        <CardBody>
+            <form onSubmit={handleSubmit}>
+                <FormGroup check>
+                    <Input type="checkbox" name="own" onChange={handleCheck} checked={formData.own} />
+                    <Label htmlFor="own" check>
+                        I own this game.
+                    </Label>
+                </FormGroup>
+                <FormGroup check>
+                    <Input type="checkbox" name="wantToPlay" onChange={handleCheck} checked={formData.wantToPlay} />
+                    <Label htmlFor="wantToPlay" check>
+                        I want to play this game.
+                    </Label>
+                </FormGroup>
+                <FormGroup>
+                    <Label htmlFor="note">Note</Label>
+                    {/* <Input name="note" type="text" value={formData.note} onChange={handleChange} required /> */}
+                    <textarea className="form-control" name="note" rows={5} onChange={handleChange} required value={formData.note} />
+                </FormGroup>
+                {/* TODO own and wantToPlay as check box! */}
 
-                        <FormGroup>
-                            <Input type="submit" className="btn btn-secondary" value="Create Note" onSubmit={handleSubmit} />
-                        </FormGroup>
-                    </form>
-                </CardBody>
-            </Card>
-        </div>
-    )
+                {formErrors && formErrors.length > 0 ?
+                    <Alerts type="danger" messages={formErrors} /> : null
+                }
+
+                <FormGroup>
+                    <Input type="submit" className="btn btn-primary" value={note ? "Update Note" : "Create Note"} onSubmit={handleSubmit} />
+                </FormGroup>
+            </form>
+        </CardBody>
+    </>)
 }
 
 export default NoteForm;
