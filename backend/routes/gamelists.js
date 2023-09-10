@@ -106,9 +106,9 @@ router.delete("/:id", ensureAdmin, async function (req, res, next) {
 router.post("/:id/add", ensureLoggedIn, async function (req, res, next) {
     try {
         // validate!
-
-        const list = await Gamelist.create(req.body);
-        return res.json({ list });
+        console.log("add", req.params.id, req.body.gameId);
+        const result = await Gamelist.addGame(req.params.id, req.body.gameId);
+        return res.json(result);
     } catch (err) {
         return next(err);
     }
@@ -126,9 +126,9 @@ router.post("/:id/add", ensureLoggedIn, async function (req, res, next) {
 router.post("/:id/remove", ensureLoggedIn, async function (req, res, next) {
     try {
         // validate!
-
-        const list = await Gamelist.create(req.body);
-        return res.json({ list });
+        console.log("add", req.params.id, req.body.gameId);
+        const result = await Gamelist.removeGame(req.params.id, req.body.gameId);
+        return res.json(result);
     } catch (err) {
         return next(err);
     }

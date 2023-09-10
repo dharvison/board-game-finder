@@ -4,6 +4,8 @@ import BoardGameFinderApi from "../apis/bgfAPI";
 import UserContext from "../auth/UserContext";
 import GameCard from "../games/GameCard";
 import LoadingSpinner from "../common/LoadingSpinner";
+import { Row } from "reactstrap";
+import CreateAddListPopup from "../lists/CreateAddListPopup";
 
 /**
  * Search Results
@@ -12,6 +14,7 @@ function SearchResults() {
     const [results, setResults] = useState([]);
     const [emptyResults, setEmptyResults] = useState(false);
     const { searchTerm, setSearchTerm } = useContext(UserContext);
+    const [createAddGameId, setCreateAddGameId] = useState(null);
 
     useEffect(() => {
         async function fetchSearchResults() {
@@ -31,7 +34,7 @@ function SearchResults() {
         }
         setResults([]);
         setEmptyResults(false);
-        
+
         if (searchTerm != null && searchTerm.length > 0) {
             fetchSearchResults();
         }
@@ -44,15 +47,19 @@ function SearchResults() {
     const spinnerComp = (!results || results.length === 0) && !emptyResults ? <LoadingSpinner /> : <></>;
 
     const resultsComp = results.map(result => (
-        <GameCard game={result} key={result.bggId} />
+        <GameCard game={result} key={result.bggId} setCreateAddGameId={setCreateAddGameId} />
     ));
 
     const emptyComp = emptyResults ? <h1>Nothing!</h1> : <></>;
 
     return (
         <div>
+            <CreateAddListPopup gameId={createAddGameId} setGameId={setCreateAddGameId} />
             <h1><span className="display-title">Search Results for {searchTerm}</span> {spinnerComp}</h1>
-            {resultsComp}{emptyComp}
+            <Row className="container">
+                {resultsComp}
+                {emptyComp}
+            </Row>
         </div>
     );
 }

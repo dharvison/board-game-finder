@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import BoardGameFinderApi from "../apis/bgfAPI";
 import GameCard from "../games/GameCard";
 import { Row } from "reactstrap";
+import CreateAddListPopup from "../lists/CreateAddListPopup";
 
 /**
  * Trending Games
  */
 function TrendingGames() {
     const [results, setResults] = useState([]);
+    const [createAddGameId, setCreateAddGameId] = useState(null);
 
     useEffect(() => {
         async function fetchTrending() {
@@ -22,13 +24,16 @@ function TrendingGames() {
     }, []);
 
     const resultsComp = results.map(result => (
-        <GameCard game={result} key={result.bggId} />
+        <GameCard game={result} key={result.bggId} setCreateAddGameId={setCreateAddGameId} />
     ));
 
     return (
-        <Row className="container">
-            {resultsComp}
-        </Row>
+        <>
+            <CreateAddListPopup gameId={createAddGameId} setGameId={setCreateAddGameId} />
+            <Row className="container">
+                {resultsComp}
+            </Row>
+        </>
     );
 }
 

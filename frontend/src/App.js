@@ -20,6 +20,7 @@ function App() {
   const [token, setToken] = useLocalStorage(TOKEN_ID);
   const [currentUser, setCurrentUser] = useState({ data: null, loaded: false });
   const [searchTerm, setSearchTerm] = useState('');
+  const [userLists, setUserLists] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -41,6 +42,16 @@ function App() {
     }
     authUser();
   }, [token]);
+
+  useEffect(() => {
+    const fetchLists = async () => {
+      if (currentUser && currentUser.loaded) {
+        const listRes = await BoardGameFinderApi.getUserLists(currentUser.data.id);
+        setUserLists(listRes);
+      }
+    }
+    fetchLists();
+  }, [currentUser, setCurrentUser]);
 
   /** Handles site-wide logout. */
   const logout = () => {
@@ -79,8 +90,9 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <UserContext.Provider value={{ currentUser, setCurrentUser, searchTerm, setSearchTerm }}>
+        <UserContext.Provider value={{ currentUser, setCurrentUser, searchTerm, setSearchTerm, userLists, setUserLists }}>
           <NavBar logout={logout} />
+          {/* TODO Alerts! */}
           <main>
             <section className="col-lg-8 col-md-10">
               <RouteList login={login} signup={signup} logout={logout} />

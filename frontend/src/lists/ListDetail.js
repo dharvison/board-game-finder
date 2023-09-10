@@ -9,13 +9,11 @@ import { Card, CardBody, CardText } from "reactstrap";
 function ListDetail() {
     const { listId } = useParams();
     const [list, setList] = useState(null);
-    // const [games, setGames] = useState([]); // TODO
 
     useEffect(() => {
         const fetchList = async () => {
             try {
                 const listData = await BoardGameFinderApi.getList(listId);
-                console.log(listData)
                 setList(listData);
             } catch (err) {
                 console.error(err);
@@ -24,17 +22,37 @@ function ListDetail() {
         fetchList();
     }, [listId]);
 
+    async function removeGame(bggId) {
+        try {
+            console.log(bggId);
+            const removeRes = await BoardGameFinderApi.removeGameFromList(listId, bggId);
+            if (removeRes) {
+                // handle messaging
+                console.log(removeRes);
+                setList({
+                    id: list.id,
+                    title: list.title,
+                    blurb: list.blurb,
+                    games: list.games.filter(g => (g.bggId != bggId))
+                });
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     if (!list) {
         return (
             <></>
         )
     }
 
+    // TODO add link to remove game
     const gamesComp = list.games.map(g => (
-        <li key={g.bggId}>{g.title}</li>
+        <li key={g.bggId}><Link to={`/games/${g.bggId}`}>{g.title}</Link> <Link className="link-danger" onClick={() => removeGame(g.bggId)}><i className="fa fa-1x fa-window-close"></i></Link></li>
     ));
 
-    // TODO make useful
+    
     return (
         <div className="ListDetail container col-md-6">
             <h1 className="display-title">{list.title}</h1>

@@ -1,22 +1,12 @@
 # Musts
 
-## search
--- add to list
-    -- create a list to add it to
-
-
-## Profile view and edit
+#### TODO ####
+-- search aggregates images, trending gets designers?
 
 
 ## list
--- add/remove game
 -- search for game to add
--- add game to list
-    -- create a list to add it to
--- smart lists
-    -- own
-    -- want to play
-    -- combined?
+
 
 
 ## messages
@@ -32,9 +22,13 @@
 
 # Nice to haves
 
-* page for finding beginner games -- dixit, codenames, etc
+## page for finding beginner games -- dixit, codenames, etc
 
-
+## Profile
+-- smart lists
+    -- own
+    -- want to play
+    -- combined?
 
 
 
@@ -42,9 +36,14 @@
 
 ## search
 -- add note
+-- add to list
+    -- create a list to add it to
 
 ## list
 -- create/view/edit
+-- add/remove game
+-- add game to list
+    -- create a list to add it to
 
 ## note
 -- create/edit - Done

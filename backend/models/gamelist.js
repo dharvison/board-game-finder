@@ -3,6 +3,7 @@
 const db = require("../db");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 const { NotFoundError } = require("../expressError");
+const Game = require("./game");
 
 /** Related functions for gamelists. */
 
@@ -146,13 +147,88 @@ class Gamelist {
     /** Add game to gamelist; returns updated gamelist games? */
 
     static async addGame(listId, gameId) {
-        // TODO
+        const listRes = await db.query(
+            `SELECT l.id,
+                  l.user_id AS "userId"
+           FROM gamelists l
+           WHERE l.id = $1`,
+            [listId],
+        );
+        const list = listRes.rows[0];
+        if (!list) throw new NotFoundError(`No list: ${listId}`);
+
+        const game = await Game.get(gameId);
+        if (!game) throw new NotFoundError(`No game: ${gameId}`);
+
+        const gamesInListRes = await db.query(
+            `SELECT gl.game_id AS "gameId"
+           FROM gamelists l
+             JOIN gamelist_games gl ON l.id = gl.gamelist_id
+           WHERE l.id = $1
+             AND gl.game_id = $2`,
+            [listId, gameId]);
+        if (gamesInListRes.rows[0]) {
+            return { error: 'Game already in list!' };
+        } else {
+            const result = await db.query(
+                `INSERT INTO gamelist_games
+               (gamelist_id,
+                game_id)
+               VALUES ($1, $2)
+               RETURNING gamelist_id AS "gameListId",
+                         game_id AS "gameId"`,
+                [
+                    listId,
+                    gameId,
+                ],
+            );
+            if (result.rows[0]) {
+                return { success: 'Added to list' };
+            } else {
+                return { error: 'Failed to add to list' };
+            }
+        }
     }
 
     /** Remove game from gamelist; returns updated gamelist games? */
 
     static async removeGame(listId, gameId) {
-        // TODO
+        const listRes = await db.query(
+            `SELECT l.id,
+                  l.user_id AS "userId"
+           FROM gamelists l
+           WHERE l.id = $1`,
+            [listId],
+        );
+        const list = listRes.rows[0];
+        if (!list) throw new NotFoundError(`No list: ${listId}`);
+
+        const game = await Game.get(gameId);
+        if (!game) throw new NotFoundError(`No game: ${gameId}`);
+
+        const gamesInListRes = await db.query(
+            `SELECT gl.game_id AS "gameId"
+           FROM gamelists l
+             JOIN gamelist_games gl ON l.id = gl.gamelist_id
+           WHERE l.id = $1
+             AND gl.game_id = $2`,
+            [listId, gameId]);
+        if (gamesInListRes.rows[0]) {
+            // console.log("GAME IN LIST!")
+            const delRes = await db.query(
+                `DELETE
+               FROM gamelist_games
+               WHERE gamelist_id = $1 AND game_id = $2
+               RETURNING gamelist_id`,
+                [listId, gameId],
+            );
+
+            const gamelist = delRes.rows[0];
+            if (gamelist) {
+                return { success: 'Removed from list' };
+            }
+        }
+        return { error: 'Failed to remove' };
     }
 }
 

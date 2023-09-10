@@ -18,7 +18,7 @@ class BoardGameFinderApi {
 
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${BoardGameFinderApi.token}` };
-    // data.userId = BoardGameFinderApi.userId;
+
     const params = (method === "get")
       ? data
       : {};
@@ -103,7 +103,7 @@ class BoardGameFinderApi {
    */
 
   /** Get details on a game by id. */
-  //TODO
+
   static async getGame(id) {
     let res = await this.request(`game/${id}`);
     return res.game;
@@ -116,21 +116,21 @@ class BoardGameFinderApi {
    */
 
   /** Get details on a game list by id. */
-  // TODO
+
   static async getList(id) {
     let res = await this.request(`list/${id}`);
     return res.list;
   }
 
   /** Create a game list. */
-  // TODO
+
   static async createList(data) {
     let res = await this.request(`list/`, data, "post");
     return { success: true, list: res.list };
   }
 
   /** Update details for a game list by id. */
-  // TODO
+
   static async updateList(id, data) {
     let res = await this.request(`list/${id}`, data, "patch");
     return { success: true, list: res.list };
@@ -144,15 +144,17 @@ class BoardGameFinderApi {
   }
 
   /** Add game to list */
-  // TODO
+
   static async addGameToList(listId, gameId) {
-    await this.request(`list/${listId}/remove/${gameId}`, {}, "post");
+    const res = await this.request(`list/${listId}/add`, { gameId }, "post");
+    return res;
   }
 
   /** Remove game from list */
   // TODO
   static async removeGameFromList(listId, gameId) {
-    await this.request(`list/${listId}/add/${gameId}`, {}, "post");
+    const res = await this.request(`list/${listId}/remove`, { gameId }, "post");
+    return res;
   }
 
   /**
@@ -162,21 +164,21 @@ class BoardGameFinderApi {
    */
 
   /** Get details on a game note by id. */
-  // TODO
+
   static async getNote(id) {
     let res = await this.request(`note/${id}`);
     return res.note;
   }
 
   /** Create a game note. */
-  // TODO
+
   static async createNote(data) {
     let res = await this.request(`note/`, data, "post");
     return { success: true, note: res.note };
   }
 
   /** Update details on a game note by id. */
-  // TODO
+
   static async updateNote(id, data) {
     let res = await this.request(`note/${id}`, data, "patch");
     return { success: true, note: res.note };
