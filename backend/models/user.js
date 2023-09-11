@@ -134,7 +134,7 @@ class User {
      *
      * Throws NotFoundError if user not found.
      **/
-    // TODO implement!
+
     static async get(username) {
         const userRes = await db.query(
             `SELECT id,
@@ -152,14 +152,50 @@ class User {
 
         const user = userRes.rows[0];
 
-        // if (!user) throw new NotFoundError(`No user: ${username}`);
+        if (!user) throw new NotFoundError(`No user: ${username}`);
 
-        // const userApplicationsRes = await db.query(
-        //     `SELECT a.job_id
-        //    FROM applications AS a
-        //    WHERE a.username = $1`, [username]);
+        return user;
+    }
 
-        // user.applications = userApplicationsRes.rows.map(a => a.job_id);
+    /** Given a userId, return data about user.
+     *
+     * Returns { id, username, name, email, bio, country, city }
+     * 
+     * if includeSmartLists also includes games
+     * [{bggId, title, own, wantToPlay} ...]
+     *
+     * Throws NotFoundError if user not found.
+     **/
+    static async getById(userId, includeSmartLists = false) {
+        const userRes = await db.query(
+            `SELECT id,
+                    username,
+                    email,
+                    name,
+                    bio,
+                    country,
+                    city
+            FROM users
+            WHERE id = $1`,
+            [userId],
+        );
+        const user = userRes.rows[0];
+        if (!user) throw new NotFoundError(`No user: ${userId}`);
+
+        if (includeSmartLists) {
+            const listRes = await db.query(
+                `SELECT g.bgg_id AS "bggId",
+                        g.title,
+                        n.own,
+                        n.want_to_play AS "wantToPlay"
+                FROM gamenotes n
+                 JOIN games g ON n.game_id = g.bgg_id
+                WHERE n.user_id = $1`,
+                [userId],
+            );
+            user.games = listRes.rows;
+        }
+
         return user;
     }
 

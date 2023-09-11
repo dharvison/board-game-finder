@@ -26,7 +26,7 @@ function ProfileView() {
             }
         }
         fetchUserNotes();
-    }, [currentUser]); // Probably needs something to update on creation TODO
+    }, [currentUser]);
 
     useEffect(() => {
         async function fetchUserLists() {
@@ -40,7 +40,7 @@ function ProfileView() {
             }
         }
         fetchUserLists();
-    }, [currentUser]); // Probably needs something to update on creation TODO
+    }, [currentUser]);
 
     const noteComp = notes.map(note => (
         <li key={note.id}><Link to={`/games/${note.gameId}`}>{note.title}</Link></li>
@@ -54,8 +54,9 @@ function ProfileView() {
     return (
         <div className="Profile container col-md-12">
             <Row>
-                <h1><span className="display-title">Welcome {currentUser.data.username}</span> <Link className="btn btn-outline-light" to="/user/profile/edit">Edit</Link> </h1>
+                <h1><span className="display-title">Welcome {currentUser.data.username}</span> <Link className="btn btn-outline-light" to="/users/profile/edit">Edit</Link> </h1>
             </Row>
+            {/* TODO Messages or Inbox? */}
             <Row>
                 <div className="col-md-5">
                     <Card>
@@ -91,8 +92,6 @@ function ProfileView() {
                     </Card>
                 </div>
             </Row>
-
-            {/* Todo Messages? */}
         </div>
     )
 }

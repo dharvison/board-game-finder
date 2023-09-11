@@ -66,7 +66,7 @@ function CreateAddListPopup({ gameId, setGameId }) {
 
     return (<>
         <Modal isOpen={showModal} toggle={hideModal}>
-            <ModalHeader toggle={hideModal}>Modal title</ModalHeader>
+            <ModalHeader toggle={hideModal}>Create a New List</ModalHeader>
             <form onSubmit={handleSubmit}>
                 <ModalBody>
                     <FormGroup>

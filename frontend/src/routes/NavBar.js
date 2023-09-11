@@ -17,12 +17,13 @@ function NavBar({ logout }) {
       <NavLink to="/trending" className="nav-item">Browse</NavLink>
       {/* <NavLink to="/notes/create" className="nav-item">Create Note</NavLink> */}
       <NavLink to="/lists/create" className="nav-item">Create List</NavLink>
-      {/* TODO dropdown! */}
+      {/* TODO dropdown? */}
     </NavItem>
   )
 
   const loggedInRightLinks = () => (
     <NavItem>
+      <NavLink to="/inbox" className="nav-item">Inbox</NavLink>
       <NavLink to="/users/profile" className="nav-item">Profile</NavLink>
       <NavLink to="/logout" onClick={logout} className="nav-item">Logout</NavLink>
     </NavItem>

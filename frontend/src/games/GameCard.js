@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, CardBody, CardTitle, CardText, CardSubtitle, CardImg } from "reactstrap";
+import { Card, CardBody, CardTitle, CardText, CardSubtitle } from "reactstrap";
 import AddToList from "../lists/AddToList";
 
 /**
@@ -23,7 +23,7 @@ function GameCard({ game, setCreateAddGameId }) {
                     <CardText>
                         {imgComp}
                     </CardText>
-                    {/* TODO! */}
+
                     <Link className="btn btn-primary" to={`/notes/create/${game.bggId}`}>Create Note</Link>
                     <AddToList bggId={game.bggId} setCreateAddGameId={setCreateAddGameId} />
                 </CardBody>

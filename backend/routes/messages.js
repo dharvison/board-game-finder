@@ -23,8 +23,8 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
     try {
         // validate!
 
-        const game = await Message.create(req.body);
-        return res.status(201).json({ game });
+        const message = await Message.send(req.body);
+        return res.status(201).json({ message });
     } catch (err) {
         return next(err);
     }
@@ -37,10 +37,10 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: admin or to/from TODO
  */
 
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", ensureLoggedIn, async function (req, res, next) {
     try {
-        const msg = await Message.get(req.params.id);
-        return res.json({ msg });
+        const message = await Message.get(req.params.id);
+        return res.json({ message });
     } catch (err) {
         return next(err);
     }

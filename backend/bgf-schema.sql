@@ -17,7 +17,7 @@ CREATE TABLE messages (
       REFERENCES users(id),
     to_user INTEGER NOT NULL
       REFERENCES users(id),
-    date DATE NOT NULL,
+    date TIMESTAMP NOT NULL,
     subject TEXT NOT NULL,
     body TEXT NOT NULL
 );

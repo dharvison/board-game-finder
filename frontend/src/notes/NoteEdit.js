@@ -5,6 +5,7 @@ import { Card, Row } from "reactstrap";
 import GameDetail from "../games/GameDetail";
 import NoteForm from "./NoteForm";
 import LoadingSpinner from "../common/LoadingSpinner";
+import CreateAddListPopup from "../lists/CreateAddListPopup";
 
 /**
  * Edit Note page
@@ -13,6 +14,7 @@ function NoteEdit() {
     const { noteId } = useParams();
     const [note, setNote] = useState(null);
     const [loaded, setLoaded] = useState(false);
+    const [createAddGameId, setCreateAddGameId] = useState(null);
 
     useEffect(() => {
         const fetchNote = async () => {
@@ -38,10 +40,11 @@ function NoteEdit() {
 
     return (
         <div className="GameDetail container">
+            <CreateAddListPopup gameId={createAddGameId} setGameId={setCreateAddGameId} />
             <Row>
                 <div className="col-md-5">
                     <Card>
-                        <GameDetail bggId={note.game.bggId} />
+                        <GameDetail bggId={note.game.bggId} setCreateAddGameId={setCreateAddGameId} />
                     </Card>
                 </div>
 

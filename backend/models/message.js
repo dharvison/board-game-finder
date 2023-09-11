@@ -3,6 +3,7 @@
 const db = require("../db");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 const { NotFoundError } = require("../expressError");
+const User = require("./user");
 
 /** Related functions for games. */
 
@@ -15,21 +16,20 @@ class Message {
      * Throws BadRequestError on duplicates.
      **/
 
-    static async send({ fromUser, toUser, date, subject, body}) {
+    static async send({ fromUser, toUser, subject, body}) {
         // TODO maybe set the date on creation!
         const result = await db.query(
             `INSERT INTO messages
            (from_user,
             to_user,
-            date,
             subject,
-            body)
-           VALUES ($1, $2, $3, $4, $5)
+            body,
+            date)
+           VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
            RETURNING id, from_user AS "fromUser", to_user AS "toUser", date, subject, body`,
             [
                 fromUser,
                 toUser,
-                date,
                 subject,
                 body,
             ],
@@ -42,19 +42,21 @@ class Message {
 
     /** Find all messages to the given user.
      *
-     * Returns [{ id, fromUser, toUser, date, subject }, ...]
+     * Returns [{ id, fromUser, fromUsername, toUser, date, subject }, ...]
      **/
 
     static async fetchMessages(userId) {
         const result = await db.query(
-            `SELECT id,
-                  from_user AS "fromUser",
-                  to_user AS "toUser",
-                  date,
-                  subject
-           FROM messages
-           WHERE to_user = $1
-           ORDER BY date`,
+            `SELECT m.id,
+                  m.from_user AS "fromUser",
+                  u.username AS "fromUsername",
+                  m.to_user AS "toUser",
+                  m.date,
+                  m.subject
+           FROM messages m
+            JOIN users u ON m.from_user = u.id
+           WHERE m.to_user = $1
+           ORDER BY m.id`,
              [userId],
         );
 
@@ -68,14 +70,16 @@ class Message {
 
     static async fetchSentMessages(userId) {
         const result = await db.query(
-            `SELECT id,
-                  from_user AS "fromUser",
-                  to_user AS "toUser",
-                  date,
-                  subject
-           FROM messages
-           WHERE from_user = $1
-           ORDER BY date`,
+            `SELECT m.id,
+                  m.from_user AS "fromUser",
+                  u.username AS "toUsername",
+                  m.to_user AS "toUser",
+                  m.date,
+                  m.subject
+           FROM messages m
+            JOIN users u ON m.to_user = u.id
+           WHERE m.from_user = $1
+           ORDER BY m.id`,
              [userId],
         );
 
@@ -106,8 +110,12 @@ class Message {
 
         if (!msg) throw new NotFoundError(`No message: ${msgId}`);
 
-        return msg;
+        const fromUser = await User.getById(msg.fromUser);
+        const toUser = await User.getById(msg.toUser);
+        msg.fromUser = fromUser;
+        msg.toUser = toUser;
 
+        return msg;
     }
 
     /** Delete given message from database; returns undefined. */

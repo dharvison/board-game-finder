@@ -4,7 +4,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
 /** API Class.
  *
- * TODO Write this
+ * Fetch data from backend
  *
  */
 
@@ -96,6 +96,20 @@ class BoardGameFinderApi {
     return res.note;
   }
 
+  /** Fetch all messages for a user */
+
+  static async getUserMessages(userId) {
+    let res = await this.request(`user/${userId}/msgs`);
+    return res.messages;
+  }
+
+  /** Get user profile. */
+
+  static async getUserProfile(userId) {
+    let res = await this.request(`user/${userId}/public`);
+    return res.user;
+  }
+
   /**
    * 
    * Game
@@ -137,7 +151,7 @@ class BoardGameFinderApi {
   }
 
   /** Delete a game list by id. */
-  // TODO
+
   static async deleteList(id) {
     let res = await this.request(`list/${id}`);
     return res.list;
@@ -151,7 +165,7 @@ class BoardGameFinderApi {
   }
 
   /** Remove game from list */
-  // TODO
+
   static async removeGameFromList(listId, gameId) {
     const res = await this.request(`list/${listId}/remove`, { gameId }, "post");
     return res;
@@ -185,7 +199,7 @@ class BoardGameFinderApi {
   }
 
   /** Delete a game note by id. */
-  // TODO
+
   static async deleteNote(id) {
     let res = await this.request(`note/${id}`);
     return res.note;
@@ -198,31 +212,24 @@ class BoardGameFinderApi {
    */
 
   /** Get details on a message by id. */
-  // TODO
+
   static async getMessage(id) {
-    let res = await this.request(`message/${id}`);
+    let res = await this.request(`msg/${id}`);
     return res.message;
   }
 
   /** Send a message. */
-  // TODO
-  static async sendMessage(body) {
-    let res = await this.request(`message/`, body, "post");
-    return res.message;
-  }
 
-  /** Fetch all messages for a user */
-  // TODO
-  static async getUserMessages(username) {
-    let res = await this.request(`${username}/msgs`);
-    return res.message;
+  static async sendMessage(body) {
+    let res = await this.request(`msg/`, body, "post");
+    return { success: true, message: res.message };
   }
 
   /** Delete a message by id. */
-  // TODO
+
   static async deleteMessage(id) {
-    let res = await this.request(`message/${id}`);
-    return res.message;
+    let res = await this.request(`msg/${id}`, {}, "delete");
+    return { success: true, message: res.message };
   }
 
   /**

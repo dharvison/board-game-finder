@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import BoardGameFinderApi from "../apis/bgfAPI";
 import { CardBody, CardImg, CardSubtitle, CardTitle } from "reactstrap";
 import LoadingSpinner from "../common/LoadingSpinner";
+import AddToList from "../lists/AddToList";
 
 /**
  * Game Detail
  */
-function GameDetail({ bggId }) {
+function GameDetail({ bggId, setCreateAddGameId }) {
     const [game, setGame] = useState(null);
     const [loaded, setLoaded] = useState(false);
 
@@ -43,7 +44,7 @@ function GameDetail({ bggId }) {
             <CardBody>
                 <CardImg src={game.coverUrl} alt={`Cover for ${game.title}`} />
             </CardBody>
-            {/* TODO Add to list! */}
+            <AddToList bggId={game.bggId} setCreateAddGameId={setCreateAddGameId} />
         </>
     );
 }

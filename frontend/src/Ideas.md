@@ -1,17 +1,8 @@
 # Musts
 
-#### TODO ####
--- search aggregates images, trending gets designers?
-
-
 ## list
 -- search for game to add
 
-
-
-## messages
--- send/read messages
--- inbox?
 
 
 ## find users in city
@@ -22,17 +13,15 @@
 
 # Nice to haves
 
+## Errors for missing users, messages, games, lists, etc
+
 ## page for finding beginner games -- dixit, codenames, etc
 
-## Profile
--- smart lists
-    -- own
-    -- want to play
-    -- combined?
+#### TODO ####
+-- search aggregates images, trending gets designers?
 
 
-
-# Done?
+# Done
 
 ## search
 -- add note
@@ -51,3 +40,14 @@
 
 ## view game
 -- add note
+
+## messages
+-- send/read messages
+-- inbox
+
+## Profile
+-- public profile
+-- smart lists
+    -- own
+    -- want to play
+    -- combined?

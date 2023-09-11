@@ -65,8 +65,8 @@ function SignupForm({ signup }) {
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="bio">Bio</Label> 
-                            {/* TODO text area? */}
-                            <Input name="bio" type="text" value={formData.bio} onChange={handleChange} required />
+                            {/* <Input name="bio" type="text" value={formData.bio} onChange={handleChange} required /> */}
+                            <textarea className="form-control" name="bio" rows={5} onChange={handleChange} required value={formData.bio} />
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="country">Country</Label>
@@ -82,7 +82,7 @@ function SignupForm({ signup }) {
                         }
 
                         <FormGroup>
-                            <Input type="submit" className="btn btn-secondary" value="Sign up" onSubmit={handleSubmit} />
+                            <Input type="submit" className="btn btn-primary" value="Sign up" onSubmit={handleSubmit} />
                         </FormGroup>
                     </form>
                 </CardBody>

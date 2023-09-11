@@ -82,7 +82,6 @@ function NoteForm({ bggId, note }) {
                     {/* <Input name="note" type="text" value={formData.note} onChange={handleChange} required /> */}
                     <textarea className="form-control" name="note" rows={5} onChange={handleChange} required value={formData.note} />
                 </FormGroup>
-                {/* TODO own and wantToPlay as check box! */}
 
                 {formErrors && formErrors.length > 0 ?
                     <Alerts type="danger" messages={formErrors} /> : null

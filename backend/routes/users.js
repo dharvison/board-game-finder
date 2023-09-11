@@ -11,6 +11,7 @@ const router = new express.Router();
 const { BadRequestError } = require("../expressError");
 const Gamenote = require("../models/gamenote");
 const Gamelist = require("../models/gamelist");
+const Message = require("../models/message");
 
 // POST create for admin only?
 
@@ -88,8 +89,24 @@ router.delete("/:username", ensureAdmin, async function (req, res, next) {
 });
 
 
+/** GET /[userId]/public => { user }
+ *
+ * Returns { username, firstName, lastName, isAdmin, ownedGames, playGames }
+ *
+ * Authorization required: loggedIn
+ **/
 
-/** GET /[username]/notes => { notes list! }
+router.get("/:userId/public", ensureLoggedIn, async function (req, res, next) {
+    try {
+        const user = await User.getById(req.params.userId, true);
+        return res.json({ user });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+
+/** GET /[userId]/notes => { notes list! }
  *
  * Returns [{ id, userId, gameId, note, own, wantToPlay }, ...]
  *
@@ -105,7 +122,7 @@ router.get("/:userId/notes", ensureLoggedIn, async function (req, res, next) {
     }
 });
 
-/** GET /[username]/notes/[bggId] => { notes }
+/** GET /[userId]/notes/[bggId] => { notes }
  *
  * Returns { id, userId, gameId, note, own, wantToPlay } if exists
  * or { result: 'none' }
@@ -128,7 +145,7 @@ router.get("/:userId/note/:bggId", ensureLoggedIn, async function (req, res, nex
     }
 });
 
-/** GET /[username]/lists => { list list! }
+/** GET /[userId]/lists => { list list! }
  *
  * Returns [{ id, userId, title, blurb }, ...]
  *
@@ -144,18 +161,33 @@ router.get("/:userId/lists", ensureLoggedIn, async function (req, res, next) {
     }
 });
 
-/** GET /[username]/msgs => { msg list! }
+/** GET /[userId]/msgs => { messages }
  *
- * Returns { username, firstName, lastName, isAdmin, jobs }
- *   where jobs is { id, title, companyHandle, companyName, state }
+ * Returns [{ id, fromUser, toUser, date, subject }, ...]
  *
- * Authorization required: admin or same user-as-:username
- **/ //TODO
+ * Authorization required: logged in
+ **/
 
-router.get("/:username/msgs", ensureLoggedIn, async function (req, res, next) {
+router.get("/:userId/msgs", ensureLoggedIn, async function (req, res, next) {
     try {
-        const user = await User.get(req.params.username);
-        return res.json({ user });
+        const messages = await Message.fetchMessages(req.params.userId);
+        return res.json({ messages });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET /[userId]/sent => { messages }
+ *
+ * Returns [{ id, fromUser, toUser, date, subject }, ...]
+ *
+ * Authorization required: logged in
+ **/
+
+router.get("/:userId/sent", ensureLoggedIn, async function (req, res, next) {
+    try {
+        const messages = await Message.fetchSentMessages(req.params.userId);
+        return res.json({ messages });
     } catch (err) {
         return next(err);
     }
