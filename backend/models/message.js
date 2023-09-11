@@ -17,7 +17,6 @@ class Message {
      **/
 
     static async send({ fromUser, toUser, subject, body}) {
-        // TODO maybe set the date on creation!
         const result = await db.query(
             `INSERT INTO messages
            (from_user,
@@ -56,7 +55,7 @@ class Message {
            FROM messages m
             JOIN users u ON m.from_user = u.id
            WHERE m.to_user = $1
-           ORDER BY m.id`,
+           ORDER BY m.id DESC`,
              [userId],
         );
 
@@ -135,10 +134,9 @@ class Message {
 
     /** Mark Message read or unread */
 
-    static async toggleRead(msgId) {
-        // TODO
-        // needs field in table to update
-    }
+    // static async toggleRead(msgId) {
+    //     // needs field in table to update
+    // }
 }
 
 

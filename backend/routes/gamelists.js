@@ -43,12 +43,12 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 /** GET /[listId] => { list }  
  * 
  * returns { id, userId, title, blurb, games }
- *      where games is [{ game stuff here TODO }]
+ *      where games is [{ bggId, title, designer, coverUrl, year } ...]
  * 
- * Authorization required: none TODO probably user who owns the list, unless public?
+ * Authorization required: loggedIn
  */
 
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", ensureLoggedIn, async function (req, res, next) {
     try {
         const list = await Gamelist.get(req.params.id);
         return res.json({ list });
@@ -96,9 +96,9 @@ router.delete("/:id", ensureAdmin, async function (req, res, next) {
 
 /** POST /[listId]/add { gameId } => { list } 
  * 
- * add game id TODO
+ * add game with gameId to list
  * 
- * returns ???
+ * returns { list }
  * 
  * Authorization required: admin or owner TODO
  */
@@ -116,9 +116,9 @@ router.post("/:id/add", ensureLoggedIn, async function (req, res, next) {
 
 /** POST /[listId]/remove { gameId } => { list } 
  * 
- * add game id TODO
+ * remove game with gameId frome list
  * 
- * returns ???
+ * returns { list }
  * 
  * Authorization required: admin or owner TODO
  */

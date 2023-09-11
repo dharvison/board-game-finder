@@ -76,6 +76,13 @@ class BoardGameFinderApi {
     return res.lists;
   }
 
+  /** Get user lists with gameId. */
+
+  static async getUserListsWithGameId(userId, gameId) {
+    let res = await this.request(`user/${userId}/lists/${gameId}`);
+    return res.lists;
+  }
+
   /** Get user notes. */
 
   static async getUserNotes(userId) {
@@ -255,6 +262,19 @@ class BoardGameFinderApi {
 
   static async trending() {
     let res = await this.request(`trending/hot`);
+    return res;
+  }
+
+  /**
+   * 
+   * Find Players
+   * 
+   */
+
+  /** Find local players */
+
+  static async localPlayers(userId) {
+    let res = await this.request(`user/${userId}/local`);
     return res;
   }
 

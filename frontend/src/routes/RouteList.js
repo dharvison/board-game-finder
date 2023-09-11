@@ -23,6 +23,7 @@ import TrendingGames from "../trending/trending";
 import MessageSend from "../messages/MessageSend";
 import MessageView from "../messages/MessageView";
 import Inbox from "../messages/Inbox";
+import FindPlayers from "../users/FindPlayers";
 
 /**
  * Routes for App
@@ -53,8 +54,9 @@ function RouteList({ signup, login }) {
     routeComp.push(<Route key="msg-send" path="/msg/send" element={<MessageSend />} />);
     routeComp.push(<Route key="msg-view" path="/msg/:msgId" element={<MessageView />} />);
 
-    routeComp.push(<Route key="search" path="/search" element={SearchResults()} />);
-    routeComp.push(<Route key="trending" path="/trending" element={TrendingGames()} />);
+    routeComp.push(<Route key="search" path="/search" element={<SearchResults />} />);
+    routeComp.push(<Route key="trending" path="/trending" element={<TrendingGames />} />);
+    routeComp.push(<Route key="players" path="/players" element={<FindPlayers />} />);
     // } else {
     // Anon users can only access signup and login
     // routeComp.push(<Route path="/search" element={SearchResults({ searchTerm })} />);

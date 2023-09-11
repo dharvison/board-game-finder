@@ -13,9 +13,9 @@ const { BadRequestError } = require("../expressError");
 
 /** POST / { game } => { game } 
  * 
- * game should be { bggId, title, designer, coverUrl, year} TODO and external ID!
+ * game should be { bggId, title, designer, coverUrl, year}
  * 
- * returns { id, bggId, title, designer, coverUrl, year }
+ * returns { bggId, title, designer, coverUrl, year }
  * 
  * Authorization required: user
  */

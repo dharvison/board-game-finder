@@ -55,6 +55,26 @@ class Gamelist {
         return result.rows;
     }
 
+    /** Find all gamelists for the given user with game in it.
+     *
+     * Returns [{ id, userId, title }, ...]
+     **/
+
+    static async findUserListsWithGame(userId, gameId) {
+        const result = await db.query(
+            `SELECT l.id,
+                      l.user_id AS "userId",
+                      l.title
+               FROM gamelists l
+               JOIN gamelist_games g ON l.id = g.gamelist_id
+               WHERE l.user_id = $1 AND g.game_id = $2
+               ORDER BY l.title`,
+            [userId, gameId],
+        );
+
+        return result.rows;
+    }
+
     /** Given a listId, return the list info and games.
      *
      * Returns { id, userId, title, blurb, games }
@@ -62,7 +82,7 @@ class Gamelist {
      *
      * Throws NotFoundError if gamelist not found.
      **/
-    // TODO implement!
+
     static async get(listId) {
         const listRes = await db.query(
             `SELECT l.id,
@@ -77,7 +97,6 @@ class Gamelist {
 
         if (!list) throw new NotFoundError(`No list: ${listId}`);
 
-        // TODO get the games!
         const gamesRes = await db.query(
             `SELECT g.bgg_id AS "bggId",
                     g.title,
@@ -89,7 +108,7 @@ class Gamelist {
              JOIN games g ON g.bgg_id = gl.game_id
            WHERE l.id = $1`, [listId]);
 
-        list.games = gamesRes.rows; // TODO maybe map?
+        list.games = gamesRes.rows;
         return list;
     }
 
@@ -149,7 +168,8 @@ class Gamelist {
     static async addGame(listId, gameId) {
         const listRes = await db.query(
             `SELECT l.id,
-                  l.user_id AS "userId"
+                  l.user_id AS "userId",
+                  l.title
            FROM gamelists l
            WHERE l.id = $1`,
             [listId],
@@ -183,7 +203,7 @@ class Gamelist {
                 ],
             );
             if (result.rows[0]) {
-                return { success: 'Added to list' };
+                return { success: 'Added to list', game, list };
             } else {
                 return { error: 'Failed to add to list' };
             }

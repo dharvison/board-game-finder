@@ -36,7 +36,7 @@ function NoteDetail({ bggId }) {
             <>
                 <CardTitle>My Note <Link className="btn btn-sm btn-outline-primary" to={`/notes/create/${bggId}`}>Create Note</Link></CardTitle>
                 <CardBody>
-                    <CardText>None</CardText>
+                    <CardText>You don't have a note for this game.</CardText>
                 </CardBody>
             </>
         )
@@ -45,9 +45,9 @@ function NoteDetail({ bggId }) {
     return (
         <>
             <CardTitle>My Note <Link className="btn btn-sm btn-outline-primary" to={`/notes/${note.id}/edit `}>Edit Note</Link></CardTitle>
+            <CardSubtitle>{note.own ? "I own it" : "I don't own it"}</CardSubtitle>
+            <CardSubtitle>{note.wantToPlay ? "Let's play!" : "Not looking to play this game"}</CardSubtitle>
             <CardBody>
-                <CardSubtitle>{note.own ? "Own it" : "Don't Own it"}</CardSubtitle>
-                <CardSubtitle>{note.wantToPlay ? "Let's play it" : "Not looking to play"}</CardSubtitle>
                 <CardText>{note.note}</CardText>
             </CardBody>
         </>

@@ -46,26 +46,6 @@ router.get("/:id", ensureLoggedIn, async function (req, res, next) {
     }
 });
 
-/** PATCH /[msgId] { msg } => { msg } 
- * 
- * game should be { title, designer, coverUrl, year} TODO and external ID!
- * 
- * returns { id, fromUser, toUser, date, subject, body }
- * 
- * Authorization required: Admin
- */
-// PROBABLY NOT!
-// router.patch("/:id", ensureAdmin, async function (req, res, next) {
-//     try {
-//         // validate!
-
-//         const msg = await Message.update(req.params.id, req.body);
-//         return res.json({ msg });
-//     } catch (err) {
-//         return next(err);
-//     }
-// });
-
 /** DELETE /[msgId]  =>  { deleted: msgId }
  *
  * Authorization required: admin

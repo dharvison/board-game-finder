@@ -39,7 +39,6 @@ function ListDetail({ list, setList }) {
     return (<>
         <CardBody>
             <CardText>{list.blurb}</CardText>
-            <Link className="btn btn-sm btn-outline-primary" to={`/lists/${list.id}/edit`}>Edit List</Link>
             <CardTitle>Games</CardTitle>
             <ul>
                 {gamesComp}

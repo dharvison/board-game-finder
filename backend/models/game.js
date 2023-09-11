@@ -5,6 +5,8 @@ const { fetchGameInfo } = require("../apis/bggXML");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 const { NotFoundError } = require("../expressError");
 
+const NO_COVER_IMG = "https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__imagepage/img/6AJ0hDAeJlICZkzaeIhZA_fSiAI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1657689.jpg"
+
 /** Related functions for games. */
 
 class Game {
@@ -50,12 +52,12 @@ class Game {
         return game;
     }
 
-    /** Find games stored in DB TODO not sure this is required
+    /** Find games stored in DB
      *
      * Returns [{ bggId, title, designer, coverUrl, year }, ...]
      **/
 
-    static async findLocalGames(/* FILTERING? */) {
+    static async findLocalGames() {
         const result = await db.query(
             `SELECT bgg_id AS "bggId",
                   title,
@@ -98,8 +100,12 @@ class Game {
                 // maybe only add on creation of Note or List?
                 this.create(game);
             } else {
-                // TODO throw exception for missing games! on in FETCH
+                return { error: `No game ${bggId}` };
             }
+        }
+
+        if (!game.coverUrl) {
+            game.coverUrl = NO_COVER_IMG;
         }
 
         return game;

@@ -1,24 +1,34 @@
 # Musts
 
-## list
--- search for game to add
-
-
-
-## find users in city
+## alerts area
+-- various success and failures
+-- messaging when adding game already in list
 
 ## homepage
 -- some actual onboarding
 
+## Errors for missing users, messages, games, lists, etc
+
+## actual auth checks
+
+
 
 # Nice to haves
 
-## Errors for missing users, messages, games, lists, etc
 
 ## page for finding beginner games -- dixit, codenames, etc
 
-#### TODO ####
+## Search
 -- search aggregates images, trending gets designers?
+
+## find users in city but nicer
+
+## sortable message tables
+
+## message send search for username
+
+
+
 
 
 # Done
@@ -33,6 +43,7 @@
 -- add/remove game
 -- add game to list
     -- create a list to add it to
+-- search for game to add
 
 ## note
 -- create/edit - Done
@@ -51,3 +62,5 @@
     -- own
     -- want to play
     -- combined?
+
+## find users in city

@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import BoardGameFinderApi from "../apis/bgfAPI";
 import { Card, Row } from "reactstrap";
 import ListDetail from "./ListDetail";
-import SearchBar from "../search/SearchBar";
 import LoadingSpinner from "../common/LoadingSpinner";
+import SearchInCard from "../search/SearchInCard";
 
 /**
  * List Add page
@@ -25,6 +25,23 @@ function ListAdd() {
         fetchList();
     }, [listId]);
 
+    async function addToList(game) {
+        try {
+            const games = list.games.map(g => (g));
+            games.push(game);
+
+            setList({
+                id: list.id,
+                title: list.title,
+                blurb: list.blurb,
+                games: games,
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+
     if (!list) {
         return (<LoadingSpinner />);
     }
@@ -44,7 +61,7 @@ function ListAdd() {
 
                 <div className="col-md-8">
                     <Card>
-                        <SearchBar />
+                        <SearchInCard list={list} addToList={addToList} />
                     </Card>
                 </div>
             </Row>

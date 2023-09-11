@@ -67,7 +67,7 @@ class User {
            WHERE username = $1`,
             [username],
         );
-        // TODO check email too?
+
         if (duplicateCheck.rows[0]) {
             throw new BadRequestError(`Duplicate username: ${username}`);
         }
@@ -251,7 +251,7 @@ class User {
     /** Delete given user from database; returns undefined. */
 
     static async remove(username) {
-        let result = await db.query(
+        const result = await db.query(
             `DELETE
            FROM users
            WHERE username = $1
@@ -261,6 +261,27 @@ class User {
         const user = result.rows[0];
 
         if (!user) throw new NotFoundError(`No user: ${username}`);
+    }
+
+    /** Get list of users local to user with userId. */
+
+    static async getLocalUsers(userId) {
+        const user = await this.getById(userId);
+
+        const localRes = await db.query(
+            `SELECT id,
+                    username,
+                    name,
+                    email,
+                    bio,
+                    country,
+                    city
+            FROM users
+            WHERE country ILIKE $1 AND city ILIKE $2 AND id != $3`,
+            [user.country, user.city, user.id],
+        );
+
+        return localRes.rows;
     }
 }
 

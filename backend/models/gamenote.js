@@ -157,7 +157,6 @@ class Gamenote {
      */
 
     static async update(noteId, data) {
-        // TODO need this to only update { note, own, wantToPlay }
         const { setCols, values } = sqlForPartialUpdate(
             data,
             {

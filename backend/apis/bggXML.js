@@ -3,7 +3,6 @@
 /** Connect with Boardgame Geek XML API for game information */
 
 // https://boardgamegeek.com/wiki/page/BGG_XML_API
-// TODO follow TOS
 // Can be timed out if too many requests!
 const BGG_OBJ_PREFIX = 'https://boardgamegeek.com/xmlapi';
 const BGG_SEARCH_PREFIX = 'https://boardgamegeek.com/xmlapi2';
@@ -44,7 +43,7 @@ async function fetchGameInfo(bggIds) {
 
         return fetchedGames;
     } catch (err) {
-        // TODO Do something
+        console.error(err);
     }
 }
 
@@ -61,7 +60,6 @@ function parseGame(bggGame) {
     //   </boardgame>
 
     if (bggGame.error) {
-        // TODO handle
         console.err(bggGame.error.message);
     } else {
         const game = {
@@ -131,7 +129,7 @@ async function performSearch(query) {
     //      Syntax: /xmlapi/search?search=<searchString>
     //      Example: https://boardgamegeek.com/xmlapi/search?search=Crossbows%20and%20Catapults
 
-    // TODO build query? currently can pass exact=1 just fine
+    // build query? currently can pass exact=1 just fine
 
     try {
         const fetchedData = await axios.get(`${BGG_SEARCH_PREFIX}/search?query=${query}&type=boardgame`, {
@@ -206,7 +204,7 @@ async function hotItems(type='boardgame') {
 
         return hotGames;
     } catch (err) {
-        // TODO Do something
+        console.error(err);
     }
 }
 

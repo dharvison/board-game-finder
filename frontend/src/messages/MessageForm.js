@@ -17,8 +17,6 @@ function MessageForm() {
     const toUsername = searchParams.get('username');
     const initSubject = searchParams.get('subject');
 
-    console.log(searchParams, toUserId, initSubject);
-
     const initFormData = {
         toUser: toUserId ? toUserId : '',
         fromUser: currentUser.data.id,

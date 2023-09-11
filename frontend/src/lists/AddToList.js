@@ -6,7 +6,7 @@ import BoardGameFinderApi from "../apis/bgfAPI";
 /**
  * Add to list comp
  */
-function AddToList({ bggId, setCreateAddGameId }) {
+function AddToList({ bggId, setCreateAddGameId, addToList }) {
     const { userLists } = useContext(UserContext);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -17,6 +17,9 @@ function AddToList({ bggId, setCreateAddGameId }) {
                 const addRes = await BoardGameFinderApi.addGameToList(listId, gameId);
                 // TODO handle message and display!
                 console.log(addRes);
+                if (addToList) {
+                    addToList(addRes.list);
+                }
             } catch (err) {
                 console.log(err);
             }

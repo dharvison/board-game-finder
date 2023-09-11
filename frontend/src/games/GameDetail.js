@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BoardGameFinderApi from "../apis/bgfAPI";
 import { CardBody, CardImg, CardSubtitle, CardTitle } from "reactstrap";
 import LoadingSpinner from "../common/LoadingSpinner";
 import AddToList from "../lists/AddToList";
+import UserContext from "../auth/UserContext";
 
 /**
  * Game Detail
  */
 function GameDetail({ bggId, setCreateAddGameId }) {
+    const { currentUser } = useContext(UserContext);
     const [game, setGame] = useState(null);
     const [loaded, setLoaded] = useState(false);
+    const [gameLists, setGameLists] = useState([]);
 
     useEffect(() => {
         const fetchGame = async () => {
@@ -26,6 +29,25 @@ function GameDetail({ bggId, setCreateAddGameId }) {
         fetchGame();
     }, [bggId]);
 
+    useEffect(() => {
+        const fetchLists = async () => {
+            try {
+                const listsRes = await BoardGameFinderApi.getUserListsWithGameId(currentUser.data.id, bggId);
+                console.log(listsRes);
+                setGameLists(listsRes);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        fetchLists();
+    }, [bggId, currentUser]);
+
+    function addToList(list) {
+        const updateLists = gameLists.map(l => (l));
+        updateLists.push(list);
+        setGameLists(updateLists);
+    }
+
     if (!loaded) {
         return (<LoadingSpinner />);
     }
@@ -36,6 +58,10 @@ function GameDetail({ bggId, setCreateAddGameId }) {
         )
     }
 
+    const listsComp = gameLists.map(l => {
+        return (<li key={l.id}><Link to={`/lists/${l.id}`}>{l.title}</Link></li>);
+    });
+
     return (
         <>
             <CardTitle><Link to={`https://boardgamegeek.com/boardgame/${game.bggId}/`} target="_blank">{game.title}</Link></CardTitle>
@@ -44,7 +70,10 @@ function GameDetail({ bggId, setCreateAddGameId }) {
             <CardBody>
                 <CardImg src={game.coverUrl} alt={`Cover for ${game.title}`} />
             </CardBody>
-            <AddToList bggId={game.bggId} setCreateAddGameId={setCreateAddGameId} />
+            <AddToList bggId={game.bggId} setCreateAddGameId={setCreateAddGameId} addToList={addToList} />
+            <CardTitle>In Your lists: </CardTitle>
+            {' '}
+            {gameLists.length > 0 ? <ul>{listsComp}</ul> : <CardSubtitle>None</CardSubtitle>}
         </>
     );
 }

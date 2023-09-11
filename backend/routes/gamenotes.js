@@ -37,10 +37,10 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * 
  * returns { id, userId, gameId, note, own, wantToPlay }
  * 
- * Authorization required: none TODO probably user who owns the note, unless public?
+ * Authorization required: loggedIn
  */
 
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", ensureLoggedIn, async function (req, res, next) {
     try {
         const note = await Gamenote.get(req.params.id);
         return res.json({ note });

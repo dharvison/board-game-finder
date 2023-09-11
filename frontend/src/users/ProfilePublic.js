@@ -33,7 +33,7 @@ function ProfilePublic() {
     const ownGamesComp = [];
     const wantToPlayComp = [];
     if (user.games && user.games.length > 0) {
-        user.games.map(g => {
+        user.games.forEach(g => {
             if (g.own) {
                 ownGamesComp.push(<li key={`own-${g.bggId}`}><Link to={`/games/${g.bggId}`}>{g.title}</Link></li>);
             }

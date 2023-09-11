@@ -25,6 +25,7 @@ function GameCard({ game, setCreateAddGameId }) {
                     </CardText>
 
                     <Link className="btn btn-primary" to={`/notes/create/${game.bggId}`}>Create Note</Link>
+                    {' '}
                     <AddToList bggId={game.bggId} setCreateAddGameId={setCreateAddGameId} />
                 </CardBody>
             </Card>

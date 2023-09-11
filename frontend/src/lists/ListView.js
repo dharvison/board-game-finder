@@ -31,7 +31,7 @@ function ListView() {
 
     return (
         <div className="ListDetail container col-md-6">
-            <h1 className="display-title">{list.title}</h1>
+            <h1 className="display-title">{list.title} <Link className="btn btn-outline-primary" to={`/lists/${list.id}/edit`}>Edit List</Link></h1>
             <Card>
                 <ListDetail list={list} setList={setList} />
                 <Link className="btn btn-primary" to={`/lists/${list.id}/add`}>Add Game</Link>

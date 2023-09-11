@@ -82,7 +82,7 @@ function ListForm({ list }) {
                 }
 
                 <FormGroup>
-                    <Input type="submit" className="btn btn-secondary" value={list ? "Update List" : "Create List"} onSubmit={handleSubmit} />
+                    <Input type="submit" className="btn btn-primary" value={list ? "Update List" : "Create List"} onSubmit={handleSubmit} />
                 </FormGroup>
             </form>
         </CardBody>

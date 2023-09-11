@@ -6,7 +6,7 @@ import { Spinner } from "reactstrap";
  */
 function LoadingSpinner() {
     // return (<Spinner type="border" color="primary"><span className="sr-only">Loading...</span></Spinner>)
-    return (<Spinner type="border" color="primary"/>)
+    return (<Spinner type="border" color="primary" className="mt-1"/>)
 }
 
 export default LoadingSpinner;

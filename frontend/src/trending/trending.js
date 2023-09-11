@@ -3,6 +3,7 @@ import BoardGameFinderApi from "../apis/bgfAPI";
 import GameCard from "../games/GameCard";
 import { Row } from "reactstrap";
 import CreateAddListPopup from "../lists/CreateAddListPopup";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 /**
  * Trending Games
@@ -31,7 +32,7 @@ function TrendingGames() {
         <>
             <CreateAddListPopup gameId={createAddGameId} setGameId={setCreateAddGameId} />
             <Row className="container">
-                {resultsComp}
+                {results.length > 0 ? resultsComp : <LoadingSpinner />}
             </Row>
         </>
     );
