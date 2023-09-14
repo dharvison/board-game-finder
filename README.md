@@ -42,7 +42,7 @@ You can then use make requests to test out the backend or move on to the Fronten
 ### Frontend
 
 1. In the frontend directory run `npm -i`
-2. Start the backend via `npm start`
+2. Start the frontend via `npm start`
 
 This will start the the web server. The default port is `3000`. Navigating to `localhost:3000` should display the home page.
 
