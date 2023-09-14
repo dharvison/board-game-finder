@@ -14,6 +14,10 @@ Board Game Finder ([Bored?] Game Finder) allows you to find new and trending gam
 
 I chose these features because they will help me organize my game collection and keep track of the games I hope to play soon. Board Game Finder was designed to be the game website I want to use. I'm always looking to try out a new game, and connect with people who love board games in my area.
 
+## Tests
+
+Test are implemented via jest as *.test.js and can be run from the directories with `npm test`.
+
 ## Basic Flow
 
 1. Create and account
