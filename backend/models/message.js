@@ -124,7 +124,7 @@ class Message {
     static async remove(msgId) {
         let result = await db.query(
             `DELETE
-           FROM games
+           FROM messages
            WHERE id = $1
            RETURNING id`,
             [msgId],

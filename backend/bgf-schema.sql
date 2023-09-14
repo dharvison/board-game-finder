@@ -16,9 +16,9 @@ CREATE TABLE users (
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
     from_user INTEGER NOT NULL
-      REFERENCES users(id),
+      REFERENCES users(id) ON DELETE CASCADE,
     to_user INTEGER NOT NULL
-      REFERENCES users(id),
+      REFERENCES users(id) ON DELETE CASCADE,
     date TIMESTAMP NOT NULL,
     subject TEXT NOT NULL,
     body TEXT NOT NULL
@@ -37,16 +37,16 @@ CREATE TABLE games (
 CREATE TABLE gamelists (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL
-    REFERENCES users(id),
+    REFERENCES users(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   blurb TEXT
 );
 
 CREATE TABLE gamelist_games (
     gamelist_id INTEGER NOT NULL
-      REFERENCES gamelists(id),
+      REFERENCES gamelists(id) ON DELETE CASCADE,
     game_id INTEGER NOT NULL
-      REFERENCES games(bgg_id)
+      REFERENCES games(bgg_id) ON DELETE CASCADE
 );
 
 -- Game Notes
@@ -54,7 +54,7 @@ CREATE TABLE gamelist_games (
 CREATE TABLE gamenotes (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL
-    REFERENCES users(id),
+    REFERENCES users(id) ON DELETE CASCADE,
   game_id INTEGER NOT NULL
     REFERENCES games(bgg_id) ON DELETE CASCADE,
   note TEXT NOT NULL,

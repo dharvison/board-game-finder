@@ -23,17 +23,20 @@ afterAll(commonAfterAll);
 
 describe("create game", function () {
     test("works", async function () {
-        const game = await db.query(`
-            INSERT INTO games
-            (bgg_id,
-            title,
-            designer,
-            cover_url,
-            year)
-        VALUES ('1111', 'New Game', 'New', 'CoverURLNew', '1998')
-        RETURNING bgg_id AS "bggId", title, designer, year, cover_url AS "coverUrl"`);
+        const game = await Game.create({
+            bggId: 1111,
+            title: "New Game",
+            designer: "New",
+            year: 1998,
+            coverUrl: "CoverURLNew",
+        })
 
-        expect(game.rows[0]).toEqual({
+        const gameRes = await db.query(`
+            SELECT bgg_id AS "bggId", title, designer, year, cover_url AS "coverUrl"
+            FROM games
+            WHERE bgg_id= $1`, [game.bggId]);
+
+        expect(gameRes.rows[0]).toEqual({
             bggId: 1111,
             title: "New Game",
             designer: "New",

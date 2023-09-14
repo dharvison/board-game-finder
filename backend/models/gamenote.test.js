@@ -7,13 +7,14 @@ const {
 } = require("../expressError");
 const db = require("../db.js");
 const Gamenote = require("./gamenote.js");
-const Game = require("./game.js");
-const User = require("./user.js");
 const {
     commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
     commonAfterAll,
+    testUserIds,
+    testGameIds,
+    testNoteIds,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -25,36 +26,33 @@ afterAll(commonAfterAll);
 
 describe("create", function () {
     test("works", async function () {
-        const user = await User.authenticate("testuser", "password");
-        expect(user).toEqual({
-            id: expect.any(Number),
-            username: "testuser",
-            name: "Test",
-            bio: "User",
-            email: "joel1@joelburton.com",
-            isAdmin: false,
-            country: "US",
-            state: "TX",
-            city: "111668",
-            cityname: "Austin",
+        const userId = testUserIds[1];
+        const gameId = testGameIds[0];
+        const note = await Gamenote.create({ userId: userId.id, gameId: gameId.bggId, note: 'Note', own: true, wantToPlay: true });
+
+        const noteRes = await db.query(`
+        SELECT user_id AS "userId", game_id AS "gameId", note, own, want_to_play AS "wantToPlay"
+        FROM gamenotes
+        WHERE id= $1`, [note.id]);
+
+        expect(noteRes.rows[0]).toEqual({
+            gameId: gameId.bggId,
+            userId: userId.id,
+            note: "Note",
+            own: true,
+            wantToPlay: true,
         });
     });
 
-    test("unauth if no such user", async function () {
-        try {
-            await User.authenticate("nope", "password");
-            fail();
-        } catch (err) {
-            expect(err instanceof UnauthorizedError).toBeTruthy();
-        }
-    });
+    test("fails if non-existant user", async function () {
+        const userId = { id: 1 };
+        const gameId = testGameIds[0];
 
-    test("unauth if wrong password", async function () {
         try {
-            await User.authenticate("testuser", "wrong");
+            await Gamenote.create({ userId: userId.id, gameId: gameId.bggId, note: 'Note', own: true, wantToPlay: true });
             fail();
         } catch (err) {
-            expect(err instanceof UnauthorizedError).toBeTruthy();
+            expect(err).toBeTruthy();
         }
     });
 });
@@ -63,27 +61,35 @@ describe("create", function () {
 
 describe("get", function () {
     test("works", async function () {
-        let user = await User.get("testuser");
-        expect(user).toEqual({
+        const note = await Gamenote.get(testNoteIds[0].id);
+
+        const noteRes = await db.query(`
+        SELECT user_id AS "userId", game_id AS "gameId", note, own, want_to_play AS "wantToPlay"
+        FROM gamenotes
+        WHERE id= $1`, [testNoteIds[0].id]);
+
+        expect(note).toEqual({
+            game: {
+                bggId: noteRes.rows[0].gameId,
+                title: expect.any(String),
+                designer: expect.any(String),
+                year: expect.any(Number),
+                coverUrl: expect.any(String),
+            },
             id: expect.any(Number),
-            username: "testuser",
-            name: "Test",
-            bio: "User",
-            email: "joel1@joelburton.com",
-            isAdmin: false,
-            country: "US",
-            state: "TX",
-            city: "111668",
-            cityname: "Austin",
+            userId: testUserIds[0].id,
+            note: noteRes.rows[0].note,
+            own: noteRes.rows[0].own,
+            wantToPlay: noteRes.rows[0].wantToPlay,
         });
     });
 
-    test("not found if no such user", async function () {
+    test("fails if non-existant note", async function () {
         try {
-            await User.get("nope");
+            const note = await Gamenote.get(1);
             fail();
         } catch (err) {
-            expect(err instanceof NotFoundError).toBeTruthy();
+            expect(err).toBeTruthy();
         }
     });
 });
@@ -92,51 +98,24 @@ describe("get", function () {
 
 describe("update", function () {
     const updateData = {
-        name: "NewF",
-        bio: "NewF",
-        email: "new@email.com",
+        note: "NewNote",
+        own: true,
+        wantToPlay: false,
     };
 
     test("works", async function () {
-        let user = await User.update("testuser", updateData);
-        expect(user).toEqual({
-            id: expect.any(Number),
-            username: "testuser",
-            country: "US",
-            state: "TX",
-            city: "111668",
-            cityname: "Austin",
-            isAdmin: false,
+        const note = await Gamenote.update(testNoteIds[0].id, updateData);
+        expect(note).toEqual({
+            id: testNoteIds[0].id,
+            gameId: expect.any(Number),
+            userId: expect.any(Number),
             ...updateData,
         });
     });
 
-    test("works: set password", async function () {
-        let user = await User.update("testuser", {
-            password: "new",
-        });
-        expect(user).toEqual({
-            id: expect.any(Number),
-            username: "testuser",
-            name: "Test",
-            bio: "User",
-            email: "joel1@joelburton.com",
-            isAdmin: false,
-            city: "111668",
-            cityname: "Austin",
-            country: "US",
-            state: "TX",
-        });
-        const found = await db.query("SELECT * FROM users WHERE username = 'testuser'");
-        expect(found.rows.length).toEqual(1);
-        expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
-    });
-
-    test("not found if no such user", async function () {
+    test("not found if no such note", async function () {
         try {
-            await User.update("nope", {
-                firstName: "test",
-            });
+            await Gamenote.update(1, updateData);
             fail();
         } catch (err) {
             expect(err).toBeTruthy();
@@ -146,7 +125,7 @@ describe("update", function () {
     test("bad request if no data", async function () {
         expect.assertions(1);
         try {
-            await User.update("c1", {});
+            await Gamenote.update(testNoteIds[0].id, {});
             fail();
         } catch (err) {
             expect(err instanceof BadRequestError).toBeTruthy();
@@ -158,15 +137,16 @@ describe("update", function () {
 
 describe("remove", function () {
     test("works", async function () {
-        await User.remove("testuser");
+        await Gamenote.remove(testNoteIds[1].id);
         const res = await db.query(
-            "SELECT * FROM users WHERE username='testuser'");
+            "SELECT * FROM gamenotes WHERE id=$1",
+            [testNoteIds[1].id]);
         expect(res.rows.length).toEqual(0);
     });
 
-    test("not found if no such user", async function () {
+    test("not found if no such note", async function () {
         try {
-            await User.remove("nope");
+            await Gamenote.remove(1);
             fail();
         } catch (err) {
             expect(err).toBeTruthy();

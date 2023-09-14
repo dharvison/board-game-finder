@@ -1,6 +1,6 @@
 # Musts
 
-## deploy!
+
 
 
 
@@ -20,6 +20,8 @@
 
 ## lists update on the game detail page
 
+
+
 # Future
 
 ## page for finding beginner games -- dixit, codenames, etc
@@ -35,6 +37,8 @@
 
 
 # Done
+
+## deploy!
 
 ## search
 -- add note
