@@ -32,7 +32,7 @@ After checking out project there a few steps to get it running.
 ### Backend
 
 1. In the backend directory run `npm -i`
-2. For the backend run `psql < bgf.sql` to initialize your database
+2. Initialize your database with `psql < bgf.sql`
 3. Start the backend via `node server.js`
 
 This will start the app running locally. The default port is `3001`. A `get` request to `localhost:3001` will return `{"error":{"message":"Not Found","status":404}}` if the app is running.
