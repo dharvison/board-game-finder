@@ -89,7 +89,7 @@ function CreateAddListPopup({ gameId, setGameId }) {
                 </ModalBody>
                 <ModalFooter>
                     <Input type="submit" className="btn btn-primary" value="Create List" onSubmit={handleSubmit} />
-                    <Input type="button" className="btn btn-primary" value="Cancel" onClick={hideModal}/>
+                    <Input type="button" className="btn btn-outline-danger" value="Cancel" onClick={hideModal}/>
                 </ModalFooter>
             </form>
         </Modal>

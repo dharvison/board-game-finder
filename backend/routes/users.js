@@ -257,5 +257,38 @@ router.get("/:userId/state", ensureLoggedIn, async function (req, res, next) {
     }
 });
 
+/** GET /[userId]/local/[bggId] => { local users to play }
+ * 
+ * Returns [{ id, username, name, email, bio, country, state, city }, ...]
+ * 
+ * Authorization required: loggedin
+ */
+
+router.get("/:userId/local/:bggId", ensureLoggedIn, async function(req, res, next) {
+    try {
+        const users = await User.findlocalGame(req.params.userId, req.params.bggId);
+        return res.json({ users });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+
+/** GET /[userId]/state/[bggId] => { state users to play }
+ * 
+ * Returns [{ id, username, name, email, bio, country, state, city }, ...]
+ * 
+ * Authorization required: loggedin
+ */
+
+router.get("/:userId/state/:bggId", ensureLoggedIn, async function(req, res, next) {
+    try {
+        const users = await User.findStateGame(req.params.userId, req.params.bggId);
+        return res.json({ users });
+    } catch (err) {
+        return next(err);
+    }
+});
+
 
 module.exports = router;

@@ -36,6 +36,8 @@ function RouteList({ signup, login }) {
     if (currentUser.loaded) {
         // Logged in user can access protected routes
         routeComp.push(<Route key="game-view" path="/games/:bggId" element={<GameView />} />);
+        routeComp.push(<Route key="game-local" path="/games/:bggId/local" element={<GameView locale="local" />} />);
+        routeComp.push(<Route key="game-state" path="/games/:bggId/state" element={<GameView locale="state" />} />);
 
         routeComp.push(<Route key="note-create" path="/notes/create" element={<NoteCreate />} />);
         routeComp.push(<Route key="note-create" path="/notes/create/:bggId" element={<NoteCreate />} />);

@@ -4,11 +4,12 @@ import { Card, Row } from "reactstrap";
 import NoteDetail from "../notes/NoteDetail";
 import GameDetail from "../games/GameDetail";
 import CreateAddListPopup from "../lists/CreateAddListPopup";
+import FindGamePlayers from "./FindGamePlayers";
 
 /**
  * Game View page
  */
-function GameView() {
+function GameView({ locale }) {
     const { bggId } = useParams();
     const [createAddGameId, setCreateAddGameId] = useState(null);
 
@@ -23,7 +24,7 @@ function GameView() {
                 </div>
                 <div className="col-md-6">
                     <Card>
-                        <NoteDetail bggId={bggId} />
+                        {locale ? <FindGamePlayers bggId={bggId} locale={locale} /> : <NoteDetail bggId={bggId} />}
                     </Card>
                 </div>
             </Row>

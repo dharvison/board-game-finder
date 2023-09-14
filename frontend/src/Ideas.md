@@ -16,7 +16,9 @@
 
 ## Errors for missing users, messages, games, lists, etc
 
+## follow CC-BY for icons
 
+## lists update on the game detail page
 
 # Future
 

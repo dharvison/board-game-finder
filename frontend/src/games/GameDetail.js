@@ -64,15 +64,17 @@ function GameDetail({ bggId, setCreateAddGameId }) {
 
     return (
         <>
-            <CardTitle><Link to={`https://boardgamegeek.com/boardgame/${game.bggId}/`} target="_blank">{game.title}</Link></CardTitle>
+            <CardTitle><Link to={`/games/${game.bggId}/`}>{game.title}</Link></CardTitle>
             <CardSubtitle>Designed by {game.designer}</CardSubtitle>
             <CardSubtitle>Published {game.year}</CardSubtitle>
             <CardBody>
                 <CardImg src={game.coverUrl} alt={`Cover for ${game.title}`} />
             </CardBody>
             <AddToList bggId={game.bggId} setCreateAddGameId={setCreateAddGameId} addToList={addToList} />
-            <CardTitle>In Your lists: </CardTitle>
-            {' '}
+            <Link className="btn btn-outline-primary mt-1" to={`/games/${game.bggId}/local`}>Find Players in Your City</Link>
+            <Link className="btn btn-outline-primary mt-1" to={`/games/${game.bggId}/state`}>Find Players in Your State</Link>
+            <Link className="btn btn-outline-secondary mt-1" to={`https://boardgamegeek.com/boardgame/${game.bggId}/`} target="_blank">View on BoardGameGeek</Link>
+            <CardTitle className="my-1">In Your lists: </CardTitle>
             {gameLists.length > 0 ? <ul>{listsComp}</ul> : <CardSubtitle>None</CardSubtitle>}
         </>
     );

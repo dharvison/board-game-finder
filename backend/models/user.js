@@ -314,21 +314,28 @@ class User {
         const user = await this.getById(userId);
 
         const localRes = await db.query(
-            `SELECT id,
-                    username,
-                    name,
-                    email,
-                    bio,
-                    country,
-                    state,
-                    city,
-                    cityname
-            FROM users
-            WHERE country ILIKE $1 AND state ILIKE $2 AND city ILIKE $3 AND id != $4`,
+            `SELECT u.id,
+                    u.username,
+                    u.name,
+                    u.email,
+                    u.bio,
+                    u.country,
+                    u.state,
+                    u.city,
+                    u.cityname
+            FROM users u
+            WHERE u.country ILIKE $1 AND u.state ILIKE $2 AND u.city ILIKE $3 AND u.id != $4`,
             [user.country, user.state, user.city, user.id],
         );
 
-        return localRes.rows;
+        const localUsers = localRes.rows;
+        if (localUsers) {
+            for (const u of localUsers) {
+                u.games = await this.getGamesUserWantsToPlay(u.id);
+            }
+        }
+
+        return localUsers;
     }
 
     /** Get list of users local to user with userId. */
@@ -337,21 +344,82 @@ class User {
         const user = await this.getById(userId);
 
         const localRes = await db.query(
-            `SELECT id,
-                    username,
-                    name,
-                    email,
-                    bio,
-                    country,
-                    state,
-                    city,
-                    cityname
-            FROM users
-            WHERE country ILIKE $1 AND state ILIKE $2 AND id != $3`,
+            `SELECT u.id,
+                    u.username,
+                    u.name,
+                    u.email,
+                    u.bio,
+                    u.country,
+                    u.state,
+                    u.city,
+                    u.cityname
+            FROM users u
+            WHERE u.country ILIKE $1 AND u.state ILIKE $2 AND u.id != $3`,
             [user.country, user.state, user.id],
         );
 
+        const localUsers = localRes.rows;
+        if (localUsers) {
+            for (const u of localUsers) {
+                u.games = await this.getGamesUserWantsToPlay(u.id);
+            }
+        }
+
+        return localUsers;
+    }
+
+    /** Get games the user wants to play */
+
+    static async getGamesUserWantsToPlay(userId) {
+        const playRes = await db.query(
+            `SELECT g.bgg_id AS "bggId",
+                    g.title
+            FROM gamenotes n JOIN games g
+                ON n.game_id = g.bgg_id
+            WHERE n.user_id = $1 AND n.want_to_play = true`,
+            [userId],
+        );
+        return playRes.rows;
+    }
+
+    /** Get local users to play game */
+
+    static async findlocalGame(userId, bggId) {
+        const user = await this.getById(userId);
+
+        const localRes = await db.query(
+            `SELECT u.id,
+                    u.username,
+                    u.country,
+                    u.state,
+                    u.city,
+                    u.cityname
+            FROM users u JOIN gamenotes n ON u.id = n.user_id
+            WHERE u.country ILIKE $1 AND u.state ILIKE $2 AND u.city ILIKE $3 AND u.id != $4
+             AND n.game_id = $5 AND n.want_to_play = true`,
+            [user.country, user.state, user.city, user.id, bggId],
+        );
         return localRes.rows;
+    }
+
+    /** Get state users to play game */
+
+    static async findStateGame(userId, bggId) {
+        const user = await this.getById(userId);
+
+        const stateRes = await db.query(
+            `SELECT u.id,
+                    u.username,
+                    u.country,
+                    u.state,
+                    u.city,
+                    u.cityname
+            FROM users u JOIN gamenotes n ON u.id = n.user_id
+            WHERE u.country ILIKE $1 AND u.state ILIKE $2 AND u.id != $3
+             AND n.game_id = $4 AND n.want_to_play = true`,
+            [user.country, user.state, user.id, bggId],
+        );
+        return stateRes.rows;
     }
 }
 

@@ -285,10 +285,24 @@ class BoardGameFinderApi {
     return res;
   }
 
+  /** Find local players for game*/
+
+  static async localPlayersForGame(userId, bggId) {
+    let res = await this.request(`user/${userId}/local/${bggId}`);
+    return res;
+  }
+
   /** Find state players */
 
   static async statePlayers(userId) {
     let res = await this.request(`user/${userId}/state`);
+    return res;
+  }
+
+  /** Find state players for game */
+
+  static async statePlayersForGame(userId, bggId) {
+    let res = await this.request(`user/${userId}/state/${bggId}`);
     return res;
   }
 
