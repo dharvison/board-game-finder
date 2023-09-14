@@ -18,7 +18,12 @@ function NavBar({ logout }) {
       <NavLink to="/players" className="nav-item">Find Players</NavLink>
       {/* <NavLink to="/notes/create" className="nav-item">Create Note</NavLink> */}
       <NavLink to="/lists/create" className="nav-item">Create a List</NavLink>
-      {/* TODO dropdown? */}
+    </NavItem>
+  )
+
+  const anonLeftLinks = () => (
+    <NavItem>
+      <NavLink to="/trending" className="nav-item">Browse Games</NavLink>
     </NavItem>
   )
 
@@ -33,7 +38,7 @@ function NavBar({ logout }) {
   const anonRightLinks = () => (
     <NavItem>
       <NavLink to="/signup" className="nav-item">Sign Up</NavLink>
-      <NavLink to="/login" className="nav-item">Login</NavLink>
+      <NavLink to="/login" className="nav-item">Log In</NavLink>
     </NavItem>
   )
 
@@ -43,10 +48,9 @@ function NavBar({ logout }) {
       <NavLink to="/" className="navbar-brand">
         Bored? Game Finder
       </NavLink>
-      {/* TODO logic for collapsing! */}
         <Collapse isOpen={true} className="my-auto">
           <Nav navbar>
-            {currentUser.loaded ? loggedInLeftLinks() : ''}
+            {currentUser.loaded ? loggedInLeftLinks() : anonLeftLinks()}
           </Nav>
         </Collapse>
       </Nav>

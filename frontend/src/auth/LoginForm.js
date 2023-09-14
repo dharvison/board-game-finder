@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardBody, FormGroup, Input, Label } from "reactstrap";
 import Alerts from "../common/Alerts";
 
@@ -38,7 +38,7 @@ function LoginForm({ login }) {
 
     return (
         <div className="LoginForm container col-md-6">
-            <h2>Login</h2>
+            <span className="display-title">Log In</span> <span className="text-sm">or <Link to="/signup" className="btn btn-outline-primary mb-1">Sign Up</Link></span>
             <Card>
                 <CardBody>
                     <form onSubmit={handleSubmit}>
@@ -56,7 +56,7 @@ function LoginForm({ login }) {
                         }
 
                         <FormGroup>
-                            <Input type="submit" className="btn btn-secondary" value="Login" onSubmit={handleSubmit} />
+                            <Input type="submit" className="btn btn-primary" value="Login" onSubmit={handleSubmit} />
                         </FormGroup>
                     </form>
                 </CardBody>

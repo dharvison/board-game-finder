@@ -57,7 +57,7 @@ function ProfilePublic() {
                     <Card>
                         <CardTitle>{user.name}</CardTitle>
                         <CardSubtitle>{user.email}</CardSubtitle>
-                        <CardSubtitle><span>Location:</span> {user.city}, {user.country}</CardSubtitle>
+                        <CardSubtitle><span>Location:</span> {user.cityname}, {user.state}, {user.country}</CardSubtitle>
                         <CardBody>
                             {user.bio}
                         </CardBody>

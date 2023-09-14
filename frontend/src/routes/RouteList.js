@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import UserContext from "../auth/UserContext";
 
 import BoardGameFinderHome from "../common/BoardGameFinderHome";
 import SignupForm from "../auth/SignupForm";
@@ -29,40 +30,41 @@ import FindPlayers from "../users/FindPlayers";
  * Routes for App
  */
 function RouteList({ signup, login }) {
-    // const { currentUser, searchTerm } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
 
     const routeComp = [];
-    // if (currentUser.loaded) {
-    // Logged in user can access protected routes
-    routeComp.push(<Route key="game-view" path="/games/:bggId" element={<GameView />} />);
+    if (currentUser.loaded) {
+        // Logged in user can access protected routes
+        routeComp.push(<Route key="game-view" path="/games/:bggId" element={<GameView />} />);
 
-    routeComp.push(<Route key="note-create" path="/notes/create" element={<NoteCreate />} />);
-    routeComp.push(<Route key="note-create" path="/notes/create/:bggId" element={<NoteCreate />} />);
-    routeComp.push(<Route key="note-edit" path="/notes/:noteId/edit" element={<NoteEdit />} />);
+        routeComp.push(<Route key="note-create" path="/notes/create" element={<NoteCreate />} />);
+        routeComp.push(<Route key="note-create" path="/notes/create/:bggId" element={<NoteCreate />} />);
+        routeComp.push(<Route key="note-edit" path="/notes/:noteId/edit" element={<NoteEdit />} />);
 
-    routeComp.push(<Route key="list-create" path="/lists/create" element={<ListCreate />} />);
-    routeComp.push(<Route key="list-view" path="/lists/:listId" element={<ListView />} />);
-    routeComp.push(<Route key="list-edit" path="/lists/:listId/edit" element={<ListEdit />} />);
-    routeComp.push(<Route key="list-add" path="/lists/:listId/add" element={<ListAdd />} />);
+        routeComp.push(<Route key="list-create" path="/lists/create" element={<ListCreate />} />);
+        routeComp.push(<Route key="list-view" path="/lists/:listId" element={<ListView />} />);
+        routeComp.push(<Route key="list-edit" path="/lists/:listId/edit" element={<ListEdit />} />);
+        routeComp.push(<Route key="list-add" path="/lists/:listId/add" element={<ListAdd />} />);
 
-    routeComp.push(<Route key="profile" path="/users/profile" element={<ProfileView />} />);
-    routeComp.push(<Route key="profile-public" path="/users/:userId" element={<ProfilePublic />} />);
-    routeComp.push(<Route key="profile-update" path="/users/profile/edit" element={<ProfileForm />} />);
+        routeComp.push(<Route key="profile" path="/users/profile" element={<ProfileView />} />);
+        routeComp.push(<Route key="profile-public" path="/users/:userId" element={<ProfilePublic />} />);
+        routeComp.push(<Route key="profile-update" path="/users/profile/edit" element={<ProfileForm />} />);
 
-    routeComp.push(<Route key="inbox" path="/inbox" element={<Inbox />} />);
+        routeComp.push(<Route key="inbox" path="/inbox" element={<Inbox />} />);
 
-    routeComp.push(<Route key="msg-send" path="/msg/send" element={<MessageSend />} />);
-    routeComp.push(<Route key="msg-view" path="/msg/:msgId" element={<MessageView />} />);
+        routeComp.push(<Route key="msg-send" path="/msg/send" element={<MessageSend />} />);
+        routeComp.push(<Route key="msg-view" path="/msg/:msgId" element={<MessageView />} />);
 
-    routeComp.push(<Route key="search" path="/search" element={<SearchResults />} />);
-    routeComp.push(<Route key="trending" path="/trending" element={<TrendingGames />} />);
-    routeComp.push(<Route key="players" path="/players" element={<FindPlayers />} />);
-    // } else {
-    // Anon users can only access signup and login
-    // routeComp.push(<Route path="/search" element={SearchResults({ searchTerm })} />);
-    routeComp.push(<Route key="signup" path="/signup" element={SignupForm({ signup })} />);
-    routeComp.push(<Route key="login" path="/login" element={LoginForm({ login })} />);
-    // }
+        routeComp.push(<Route key="search" path="/search" element={<SearchResults />} />);
+        routeComp.push(<Route key="trending" path="/trending" element={<TrendingGames />} />);
+        routeComp.push(<Route key="players" path="/players" element={<FindPlayers />} />);
+    } else {
+        // Anon users can only access trending, search, signup and login
+        routeComp.push(<Route key="trending" path="/trending" element={<TrendingGames />} />);
+        routeComp.push(<Route key="search" path="/search" element={<SearchResults />} />);
+        routeComp.push(<Route key="signup" path="/signup" element={SignupForm({ signup })} />);
+        routeComp.push(<Route key="login" path="/login" element={LoginForm({ login })} />);
+    }
 
     return (
         <div>

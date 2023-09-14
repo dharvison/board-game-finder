@@ -41,7 +41,7 @@ class Message {
 
     /** Find all messages to the given user.
      *
-     * Returns [{ id, fromUser, fromUsername, toUser, date, subject }, ...]
+     * Returns [{ id, fromUser, fromUsername, toUser, date, subject, body }, ...]
      **/
 
     static async fetchMessages(userId) {
@@ -51,7 +51,8 @@ class Message {
                   u.username AS "fromUsername",
                   m.to_user AS "toUser",
                   m.date,
-                  m.subject
+                  m.subject,
+                  m.body
            FROM messages m
             JOIN users u ON m.from_user = u.id
            WHERE m.to_user = $1
@@ -64,7 +65,7 @@ class Message {
 
     /** Find all messages from the given user.
      *
-     * Returns [{ id, fromUser, toUser, date, subject }, ...]
+     * Returns [{ id, fromUser, toUser, date, subject, body }, ...]
      **/
 
     static async fetchSentMessages(userId) {
@@ -74,7 +75,8 @@ class Message {
                   u.username AS "toUsername",
                   m.to_user AS "toUser",
                   m.date,
-                  m.subject
+                  m.subject,
+                  m.body
            FROM messages m
             JOIN users u ON m.to_user = u.id
            WHERE m.from_user = $1

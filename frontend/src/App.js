@@ -9,6 +9,7 @@ import RouteList from './routes/RouteList';
 import useLocalStorage from './hooks/useLocalStorage';
 import UserContext from './auth/UserContext';
 import { Spinner } from 'reactstrap';
+// import AlertDisplay from './common/AlertDisplay';
 
 // Key for localStorage
 export const TOKEN_ID = "bgf-token";
@@ -21,6 +22,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({ data: null, loaded: false });
   const [searchTerm, setSearchTerm] = useState('');
   const [userLists, setUserLists] = useState([]);
+  // const [alertQueue, setAlertQueue] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -92,9 +94,9 @@ function App() {
       <BrowserRouter>
         <UserContext.Provider value={{ currentUser, setCurrentUser, searchTerm, setSearchTerm, userLists, setUserLists }}>
           <NavBar logout={logout} />
-          {/* TODO Alerts! */}
           <main>
             <section className="col-lg-8 col-md-10">
+              {/* <AlertDisplay alertQueue={alertQueue} setAlertQueue={setAlertQueue} /> */}
               <RouteList login={login} signup={signup} logout={logout} />
             </section>
           </main>

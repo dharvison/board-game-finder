@@ -1,33 +1,34 @@
 # Musts
 
-## alerts area
--- various success and failures
--- messaging when adding game already in list
-
-## homepage
--- some actual onboarding
-
-## Errors for missing users, messages, games, lists, etc
-
-## actual auth checks
+## deploy!
 
 
 
 # Nice to haves
-
-
-## page for finding beginner games -- dixit, codenames, etc
-
 ## Search
 -- search aggregates images, trending gets designers?
 
-## find users in city but nicer
+## alerts area
+-- various success and failures
+-- messaging when adding game already in list
 
-## sortable message tables
+## actual auth checks
+
+## Errors for missing users, messages, games, lists, etc
+
+
+
+# Future
+
+## page for finding beginner games -- dixit, codenames, etc
 
 ## message send search for username
 
+## sortable message tables
 
+## Video preview on game page
+
+## Import BGG collection
 
 
 
@@ -58,9 +59,22 @@
 
 ## Profile
 -- public profile
+    -- public link
 -- smart lists
     -- own
     -- want to play
-    -- combined?
+    -- smart lists displayed
+
+## Inbox improvements
+-- body preview & tooltip
 
 ## find users in city
+
+## selector for locations
+-- drop downs for countries and cities in profile
+
+## find users in city but nicer
+-- seaching shows more info
+
+## homepage
+-- some actual onboarding

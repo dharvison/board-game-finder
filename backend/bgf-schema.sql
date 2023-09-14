@@ -7,7 +7,9 @@ CREATE TABLE users (
   name TEXT,
   bio TEXT,
   country TEXT NOT NULL,
+  state TEXT NOT NULL,
   city TEXT NOT NULL,
+  cityname TEXT NOT NULL,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 

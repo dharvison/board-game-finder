@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import BoardGameFinderApi from "../apis/bgfAPI";
-import { Button, CardBody, CardText, CardTitle, Input, Row } from "reactstrap";
+import { Button, CardBody, Input, Row } from "reactstrap";
 import LoadingSpinner from "../common/LoadingSpinner";
-import GameCard from "../games/GameCard";
 
 /**
  * Search for Game to add card
@@ -13,7 +12,7 @@ function SearchInCard({ list, addToList }) {
     const [localSearchTerm, setLocalSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState([]);
-    const [emptyResults, setEmptyResults] = useState(false);
+    // const [emptyResults, setEmptyResults] = useState(false);
 
     const handleSubmit = async (evt) => {
         evt.preventDefault();
@@ -27,7 +26,7 @@ function SearchInCard({ list, addToList }) {
                     setResults(searchRes);
                 } else {
                     if (searchRes.error === "No games!") {
-                        setEmptyResults(true);
+                        // setEmptyResults(true);
                     }
                 }
             } catch (err) {
@@ -54,7 +53,6 @@ function SearchInCard({ list, addToList }) {
         } catch (err) {
             console.error(err);
         }
-        // update the UI, method passed from parent?
     }
 
     const spinnerComp = loading ? <LoadingSpinner /> : <></>;

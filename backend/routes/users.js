@@ -16,7 +16,7 @@ const Message = require("../models/message");
 // POST create for admin only?
 
 
-/** GET / => { users: [ { id, username, name, email, bio, country, city, isAdmin }, ... ] }
+/** GET / => { users: [ { id, username, name, email, bio, country, state, city, isAdmin }, ... ] }
  *
  * Returns list of all users.
  *
@@ -34,7 +34,7 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 
 /** GET /[username] => { user }
  *
- * Returns { id, username, name, email, bio, country, city, isAdmin }
+ * Returns { id, username, name, email, bio, country, state, city, isAdmin }
  *
  * Authorization required: admin or same user-as-:username
  **/
@@ -51,9 +51,9 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
 /** PATCH /[username] { user } => { user }
  *
  * Data can include:
- *   { name, email, bio, country, city }
+ *   { name, email, bio, country, state, city }
  *
- * Returns { id, username, name, email, bio, country, city, isAdmin }
+ * Returns { id, username, name, email, bio, country, state, city, isAdmin }
  *
  * Authorization required: admin or same-user-as-:username
  **/
@@ -90,7 +90,7 @@ router.delete("/:username", ensureAdmin, async function (req, res, next) {
 
 /** GET /[userId]/public => { user }
  *
- * Returns { id, username, name, email, bio, country, city, games }
+ * Returns { id, username, name, email, bio, country, state, city, games }
  *
  * Authorization required: loggedIn
  **/
@@ -98,6 +98,23 @@ router.delete("/:username", ensureAdmin, async function (req, res, next) {
 router.get("/:userId/public", ensureLoggedIn, async function (req, res, next) {
     try {
         const user = await User.getById(req.params.userId, true);
+        return res.json({ user });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+
+/** GET /[userId]/smartlists => { smartlists }
+ *
+ * Returns {id, games:[{bggId, title, own, wantToPlay} ...]}
+ *
+ * Authorization required: loggedIn
+ **/
+
+router.get("/:userId/smartlists", ensureLoggedIn, async function (req, res, next) {
+    try {
+        const user = await User.getSmartListsByUserId(req.params.userId);
         return res.json({ user });
     } catch (err) {
         return next(err);
@@ -210,7 +227,7 @@ router.get("/:userId/sent", ensureLoggedIn, async function (req, res, next) {
 
 /** GET /[userId]/local => { users }
  *
- * Returns [{ id, username, name, email, bio, country, city }, ...]
+ * Returns [{ id, username, name, email, bio, country, state, city }, ...]
  *
  * Authorization required: logged in
  **/
@@ -218,6 +235,22 @@ router.get("/:userId/sent", ensureLoggedIn, async function (req, res, next) {
 router.get("/:userId/local", ensureLoggedIn, async function (req, res, next) {
     try {
         const users = await User.getLocalUsers(req.params.userId);
+        return res.json({ users });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET /[userId]/state => { users }
+ *
+ * Returns [{ id, username, name, email, bio, country, state, city }, ...]
+ *
+ * Authorization required: logged in
+ **/
+
+router.get("/:userId/state", ensureLoggedIn, async function (req, res, next) {
+    try {
+        const users = await User.getStateUsers(req.params.userId);
         return res.json({ users });
     } catch (err) {
         return next(err);

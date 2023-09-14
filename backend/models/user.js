@@ -16,7 +16,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 class User {
     /** authenticate user with username, password.
      *
-     * Returns { id, username, name, email, bio, country, city, isAdmin }
+     * Returns { id, username, name, email, bio, country, state, city, isAdmin }
      *
      * Throws UnauthorizedError is user not found or wrong password.
      **/
@@ -31,7 +31,9 @@ class User {
                   name,
                   bio,
                   country,
+                  state,
                   city,
+                  cityname,
                   is_admin AS "isAdmin"
            FROM users
            WHERE username = $1`,
@@ -60,7 +62,7 @@ class User {
      **/
 
     static async register(
-        { username, password, name, email, bio, country, city, isAdmin }) {
+        { username, password, name, email, bio, country, state, city, cityname, isAdmin }) {
         const duplicateCheck = await db.query(
             `SELECT username
            FROM users
@@ -82,10 +84,12 @@ class User {
             name,
             bio,
             country,
+            state,
             city,
+            cityname,
             is_admin)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-           RETURNING id, username, email, name, bio, country, city, is_admin AS "isAdmin"`,
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+           RETURNING id, username, email, name, bio, country, state, city, cityname, is_admin AS "isAdmin"`,
             [
                 username,
                 hashedPassword,
@@ -93,7 +97,9 @@ class User {
                 name,
                 bio,
                 country,
+                state,
                 city,
+                cityname,
                 isAdmin,
             ],
         );
@@ -105,7 +111,7 @@ class User {
 
     /** Find all users.
      *
-     * Returns [{ id, username, name, email, bio, country, city, isAdmin }, ...]
+     * Returns [{ id, username, name, email, bio, country, state, city, isAdmin }, ...]
      **/
 
     static async findAll() {
@@ -116,7 +122,9 @@ class User {
                   name,
                   bio,
                   country,
+                  state,
                   city,
+                  cityname,
                   is_admin AS "isAdmin"
            FROM users
            ORDER BY username`,
@@ -127,7 +135,7 @@ class User {
 
     /** Given a username, return data about user.
      *
-     * Returns { id, username, name, email, bio, country, city, isAdmin, gamenotes, gamelists, messages }
+     * Returns { id, username, name, email, bio, country, state, city, isAdmin, gamenotes, gamelists, messages }
      *   where gamenotes is { id, ... }
      *   where gamelists is { id, ... }
      *   where messages is { id, ... }
@@ -143,7 +151,9 @@ class User {
                     name,
                     bio,
                     country,
+                    state,
                     city,
+                    cityname,
                     is_admin AS "isAdmin"
             FROM users
             WHERE username = $1`,
@@ -159,7 +169,7 @@ class User {
 
     /** Given a userId, return data about user.
      *
-     * Returns { id, username, name, email, bio, country, city }
+     * Returns { id, username, name, email, bio, country, state, city }
      * 
      * if includeSmartLists also includes games
      * [{bggId, title, own, wantToPlay} ...]
@@ -174,7 +184,9 @@ class User {
                     name,
                     bio,
                     country,
-                    city
+                    state,
+                    city,
+                    cityname
             FROM users
             WHERE id = $1`,
             [userId],
@@ -199,15 +211,46 @@ class User {
         return user;
     }
 
+    /** Given a userId, return user smart lists.
+     *
+     * Returns {id, games:[{bggId, title, own, wantToPlay} ...]}
+     *
+     * Throws NotFoundError if user not found.
+     **/
+    static async getSmartListsByUserId(userId) {
+        const userRes = await db.query(
+            `SELECT id
+            FROM users
+            WHERE id = $1`,
+            [userId],
+        );
+        const user = userRes.rows[0];
+        if (!user) throw new NotFoundError(`No user: ${userId}`);
+
+        const listRes = await db.query(
+            `SELECT g.bgg_id AS "bggId",
+                    g.title,
+                    n.own,
+                    n.want_to_play AS "wantToPlay"
+                FROM gamenotes n
+                 JOIN games g ON n.game_id = g.bgg_id
+                WHERE n.user_id = $1`,
+            [userId],
+        );
+        user.games = listRes.rows;
+
+        return user;
+    }
+
     /** Update user data with `data`.
      *
      * This is a "partial update" --- it's fine if data doesn't contain
      * all the fields; this only changes provided ones.
      *
      * Data can include:
-     *   { username, name, email, bio, country, city, password, isAdmin }
+     *   { username, name, email, bio, country, state, city, password, isAdmin }
      *
-     * Returns { id, username, name, email, bio, country, city, isAdmin }
+     * Returns { id, username, name, email, bio, country, state, city, isAdmin }
      *
      * Throws NotFoundError if not found.
      *
@@ -237,7 +280,9 @@ class User {
                                 email,
                                 bio,
                                 country,
+                                state,
                                 city,
+                                cityname,
                                 is_admin AS "isAdmin"`;
         const result = await db.query(querySql, [...values, username]);
         const user = result.rows[0];
@@ -275,10 +320,35 @@ class User {
                     email,
                     bio,
                     country,
-                    city
+                    state,
+                    city,
+                    cityname
             FROM users
-            WHERE country ILIKE $1 AND city ILIKE $2 AND id != $3`,
-            [user.country, user.city, user.id],
+            WHERE country ILIKE $1 AND state ILIKE $2 AND city ILIKE $3 AND id != $4`,
+            [user.country, user.state, user.city, user.id],
+        );
+
+        return localRes.rows;
+    }
+
+    /** Get list of users local to user with userId. */
+
+    static async getStateUsers(userId) {
+        const user = await this.getById(userId);
+
+        const localRes = await db.query(
+            `SELECT id,
+                    username,
+                    name,
+                    email,
+                    bio,
+                    country,
+                    state,
+                    city,
+                    cityname
+            FROM users
+            WHERE country ILIKE $1 AND state ILIKE $2 AND id != $3`,
+            [user.country, user.state, user.id],
         );
 
         return localRes.rows;

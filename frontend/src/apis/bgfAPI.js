@@ -117,6 +117,13 @@ class BoardGameFinderApi {
     return res.user;
   }
 
+  /** Get user smartlists. */
+
+  static async getUserSmartlists(userId) {
+    let res = await this.request(`user/${userId}/smartlists`);
+    return res.user;
+  }
+
   /**
    * 
    * Game
@@ -275,6 +282,13 @@ class BoardGameFinderApi {
 
   static async localPlayers(userId) {
     let res = await this.request(`user/${userId}/local`);
+    return res;
+  }
+
+  /** Find state players */
+
+  static async statePlayers(userId) {
+    let res = await this.request(`user/${userId}/state`);
     return res;
   }
 

@@ -1,10 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardBody, FormGroup, Input, Label } from "reactstrap";
 import Alerts from "../common/Alerts";
 import BoardGameFinderApi from "../apis/bgfAPI";
 import UserContext from "../auth/UserContext";
 
+import LocationApi from "../apis/locationAPI";
+import DropdownSelector from "../common/DropdownSelector";
 
 /**
  * Profile Form
@@ -12,18 +14,72 @@ import UserContext from "../auth/UserContext";
 function ProfileForm() {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useContext(UserContext);
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+
+    const [country, setCountry] = useState(currentUser.data.country);
+    const [state, setState] = useState(currentUser.data.state);
+    const [city, setCity] = useState(currentUser.data.city);
 
     const initFormData = {
         username: currentUser.data.username,
-        // password: '',
         email: currentUser.data.email,
         name: currentUser.data.name,
         bio: currentUser.data.bio,
         country: currentUser.data.country,
+        state: currentUser.data.state,
         city: currentUser.data.city,
+        cityname: currentUser.data.cityname,
     };
     const [formData, setFormData] = useState(initFormData);
     const [formErrors, setFormErrors] = useState([]);
+
+    useEffect(() => {
+        const fetchCountries = async () => {
+            const countryRes = await LocationApi.fetchCountries();
+            setCountries(countryRes);
+
+        }
+        fetchCountries();
+    }, []);
+
+    useEffect(() => {
+        const fetchStates = async () => {
+            const statesRes = await LocationApi.fetchStates(country);
+            setStates(statesRes);
+        }
+        if (country && country.length === 2) {
+            fetchStates();
+        }
+    }, [country, countries]);
+
+    useEffect(() => {
+        const fetchCities = async () => {
+            const cityRes = await LocationApi.fetchCities(country, state);
+            setCities(cityRes);
+        }
+        if (state && state.length === 2) {
+            fetchCities();
+        }
+    }, [state, states]);
+
+    function selectCountry(newCountry) {
+        setCountry(newCountry['iso2']);
+        handleChange({ target: { name: 'country', value: newCountry['iso2'] } });
+    }
+
+    function selectState(newState) {
+        setState(newState['iso2']);
+        handleChange({ target: { name: 'state', value: newState['iso2'] } });
+    }
+
+    function selectCity(newCity) {
+        console.log(newCity);
+        setCity(newCity['id']);
+        handleChange({ target: { name: 'city', value: newCity['id'] } });
+        handleChange({ target: { name: 'cityname', value: newCity['name'] } });
+    }
 
     /** Try to update the user. Success? -> / */
     const handleSubmit = async (evt) => {
@@ -75,11 +131,18 @@ function ProfileForm() {
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="country">Country</Label>
-                            <Input name="country" type="text" value={formData.country} onChange={handleChange} required />
+                            <DropdownSelector name="country" label="Country" data={countries} idField="iso2" displayField="name" setSelected={selectCountry} selectedId={country} required />
+                            {/* <Input name="country" type="text" value={formData.country} onChange={handleChange} required /> */}
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="state">State</Label>
+                            <DropdownSelector name="state" label="State" data={states} idField="iso2" displayField="name" setSelected={selectState} selectedId={state} required />
+                            {/* <Input name="state" type="text" value={formData.state} onChange={handleChange} required /> */}
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="city">City</Label>
-                            <Input name="city" type="text" value={formData.city} onChange={handleChange} required />
+                            <DropdownSelector name="city" label="City" data={cities} idField="id" displayField="name" setSelected={selectCity} selectedId={city} required />
+                            {/* <Input name="city" type="text" value={formData.city} onChange={handleChange} required /> */}
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="name">Name</Label>
