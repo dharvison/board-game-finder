@@ -4,6 +4,7 @@ Board Game Finder ([Bored?] Game Finder) allows you to find new and trending gam
 
 [Check out Board Game Finder](https://board-game-finder-0f8d2ba65338.herokuapp.com/)
 
+
 ## Features
 
 1. Browse hot and trending board games or search for games to play
@@ -14,9 +15,6 @@ Board Game Finder ([Bored?] Game Finder) allows you to find new and trending gam
 
 I chose these features because they will help me organize my game collection and keep track of the games I hope to play soon. Board Game Finder was designed to be the game website I want to use. I'm always looking to try out a new game, and connect with people who love board games in my area.
 
-## Tests
-
-Test are implemented via jest as *.test.js and can be run from the directories with `npm test`.
 
 ## Basic Flow
 
@@ -26,9 +24,38 @@ Test are implemented via jest as *.test.js and can be run from the directories w
 4. Search for and create a list of your favorite games
 5. Look for players in your city who want to play one of your games
 
+
+## Setup & Run
+
+After checking out project there a few steps to get it running.
+
+### Backend
+
+1. In the backend directory run `npm -i`
+2. For the backend run `psql < bgf.sql` to initialize your database
+3. Start the backend via `node server.js`
+
+This will start the app running locally. The default port is `3001`. A `get` request to `localhost:3001` will return `{"error":{"message":"Not Found","status":404}}` if the app is running.
+
+You can then use make requests to test out the backend or move on to the Frontend.
+
+### Frontend
+
+1. In the frontend directory run `npm -i`
+2. Start the backend via `npm start`
+
+This will start the the web server. The default port is `3000`. Navigating to `localhost:3000` should display the home page.
+
+
+## Tests
+
+Test are implemented via jest as *.test.js and can be run from the directories with `npm test`.
+
+
 ## API Information
 
 [Proposal and API](proposal/proposal.md)
+
 
 ## Tech Stack
 
